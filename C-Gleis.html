@@ -5,38 +5,107 @@
   <style type="text/css"> 
     </style> 
 
+<!-- <EISENB><HILLI>ok hab d=(Math.sqrt(7)-2)/3*R</HILLI></EISENB> -->
 <body>
-  <div style='display:flex; flex-direction:row; overflow:auto; height:80%'>
-  <div style='flex-direction:column; overflow:auto'>
-  <svg id="Grafik" width="2000" height="2000" viewBoxx="0 0 800 420" style="border:solid 1px black" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" stroke="darkgrey">
-    <title>Streichholzgraph</title>
+<div style='display:flex'>
+  <button style='font-size:300%' onclick='Gerade(m188,"#g188")'>24188</button>
+  <button style='font-size:300%' onclick='Gerade(m172)'>24172</button>
+  <button style='font-size:300%' onclick='Kurve(R,30,r)'>24130r</button>
+  <button style='font-size:300%' onclick='Kurve(R,30,l)'>24130&ell;</button>
+  </div>
+
+<div id='Logfiles' style='display:flex'>
+  <div id='L1' style='display:block; border:solid; margin:10px'>Logfile1</div>
+  <div id='L2' style='display:block; border:solid; margin:10px'>Logfile2</div>
+  </div>
+
+<div style='display:flex; flex-direction:row; overflow:auto; height:80%'><div style='flex-direction:column; overflow:auto'>
+  <svg id="Grafik" width="2000" height="2000" style="border:solid 1px black" fill="none" stroke="darkgrey">
+    <title>SVG C-Gleis</title>
     <defs>
       <g id="Weiche">
         <!--path d="M0,0 l100,0 M0,20 l100,0 M0,0 A200,200 0,0,1 100,26.8 M0,20 A180,180 0,0,1 90,44.12" fill="none" stroke="red"/-->
         <path d="M5,0.2 A200,200 0,0,1 87.178,20 L5,18">
-<animate attributeName="d" from="M5,0.2 A200,200 0,0,1 87.178,20 L5,18" to="M4.9,2.2 A200,200 0,0,1 87.178,20 L4.95,20" dur="0.5" fill="freeze" begin="krumm.click" end="100"/>
-<animate attributeName="d" to="M5,0.2 A200,200 0,0,1 87.178,20 L5,18" from="M4.9,2.2 A200,200 0,0,1 87.178,20 L4.95,20" dur="0.5" fill="freeze" begin="gerade.click" end="100"/>
+<animate attributeName="d" from="M5,0.2 A200,200 0,0,1 87.178,20 L5,18" to="M4.9,2.2 A200,200 0,0,1 87.178,20 L4.95,20" dur="0.5" fill="freeze" begin="kru.click" end="100"/>
+<animate attributeName="d" to="M5,0.2 A200,200 0,0,1 87.178,20 L5,18" from="M4.9,2.2 A200,200 0,0,1 87.178,20 L4.95,20" dur="0.5" fill="freeze" begin="ger.click" end="100"/>
           </path>
         <path d="M100,20 L87.178,20 A200,200 0,0,1 100,26.8" stroke-linejoin="miter" stroke-miterlimit="20" stroke="white" transform="translate(-2,-0.5)"/>
         <path d="M0,0 l100,0 M100,20 L87.178,20 A200,200 0,0,1 100,26.8 M0,20 A180,180 0,0,1 90,44.12" stroke-linejoin="miter" stroke-miterlimit="20"/>
         <circle id="kru" cx="100" cy="-12" r="5" fill="green"/>
         <circle id="ger" cx="90" cy="55" r="5" fill="orange"/>
         </g>
-      <line id="Streichholz" x1="0" y1="0" x2="0" y2="100"/>
-      <circle id="Streichholzmarkierung" cx="0" cy="0" r="3" />
-      </defs>
-      <g id="Weiche0" transform="translate(100,100)">
-        <!--path d="M0,0 l100,0 M0,20 l100,0 M0,0 A200,200 0,0,1 100,26.8 M0,20 A180,180 0,0,1 90,44.12" fill="none" stroke="red"/-->
-        <path d="M5,0.2 A200,200 0,0,1 87.178,20 L5,18">
-<animate attributeName="d" from="M5,0.2 A200,200 0,0,1 87.178,20 L5,18" to="M4.9,2.2 A200,200 0,0,1 87.178,20 L4.95,20" dur="0.5" fill="freeze" begin="krumm.click" end="indefinite"/>
-<animate attributeName="d" to="M5,0.2 A200,200 0,0,1 87.178,20 L5,18" from="M4.9,2.2 A200,200 0,0,1 87.178,20 L4.95,20" dur="0.5" fill="freeze" begin="gerade.click" end="indefinite"/>
-          </path>
-        <path d="M100,20 L87.178,20 A200,200 0,0,1 100,26.8" stroke-linejoin="miter" stroke-miterlimit="20" stroke="white" transform="translate(-2,-0.5)"/>
-        <path d="M0,0 l100,0 M100,20 L87.178,20 A200,200 0,0,1 100,26.8 M0,20 A180,180 0,0,1 90,44.12" stroke-linejoin="miter" stroke-miterlimit="20"/>
-        <circle id="krumm" cx="100" cy="-12" r="5" fill="green"/>
-        <circle id="gerade" cx="90" cy="55" r="5" fill="orange"/>
+      <g id='Schienenlegezug'>
+        <rect x='0' y='-15' width='80' height='30' fill='gray' opacity='0.5'/>
         </g>
+      <g id='g188'>
+        <rect x='0' y='-5' width='178' height='10' fill='green' opacity='0.9'/>
+        </g>
+      </defs>
+    <use id='Weiche1' href="#Weiche" transform='translate(50,50) rotate(10)'/>
+    <use id='Schienenlegezug1' href="#Schienenlegezug" transform='translate(200,100) rotate(0)'/>
     </svg></div></div>
+
+<div id='L3' style='display:block; border:solid; margin:10px; white-space:pre'>Logfile3</div>
+
+
+<script>
+let R=360;
+let d=(Math.sqrt(7)-2)/3*R;
+let m077=d;         //=0*R/3+3*d/3=25.830052442583632
+let m094=(R-d)/3;   //=1*R/3-1*d/3=
+let m172=m094+m077; //=1*R/3+2*d/3=
+let m188=2*m094;    //=2*R/3-2*d/3=
+let r=1; //Rechtskurve
+let l=-1;//Linkskurve
+let scale=0.1;
+let S={}
+S.x=200;
+S.y=100;
+S.phi=0;
+let lfdnr=0;
+
+Logvar(L1);
+
+function Logvar(id) {
+  let text='';
+  text=text+'R='+R+'<br/>m077='+m077+'<br/>m094='+m094+'<br/>m172='+m172+'<br/>m188='+m188+'<br/>m077+3*m094='+(m077+3*m094);
+  text=text+'<br/>S='+JSON.stringify(S);
+  id.innerHTML=text;
+  L3.innerText=Grafik.outerHTML;
+  }
+
+function Gerade(Laenge,Bild) {
+  Logvar(L1);
+  let BL=g188.cloneNode(true);
+  BL.setAttribute('id','lfdnr'+lfdnr); lfdnr=lfdnr+1;
+  BL.setAttribute('transform','translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')');
+  //BL.setAttribute('href',Bild);
+  Grafik.appendChild(document.createTextNode("\n  "));
+  Grafik.appendChild(BL);
+  S.x=S.x+Math.cos(S.phi/180*Math.PI)*Laenge*scale;
+  S.y=S.y+Math.sin(S.phi/180*Math.PI)*Laenge*scale;
+  Schienenlegezug1.setAttribute('transform','translate('+S.x+','+S.y+') rotate('+S.phi+')');
+  Logvar(L2);
+  }
+
+function Kurve(Radius,Winkel,rl,Bild) {
+  Logvar(L1);
+  let BL=g188.cloneNode(true);
+  BL.setAttribute('id','lfdnr'+lfdnr); lfdnr=lfdnr+1;
+  BL.setAttribute('transform','translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')');
+  //BL.setAttribute('href',Bild);
+  Grafik.appendChild(document.createTextNode("\n  "));
+  Grafik.appendChild(BL);
+  let phi2=(S.phi+90*rl)/180*Math.PI;
+  let phi3=(S.phi+90*rl+Winkel*rl)/180*Math.PI;
+  S.x=S.x-Math.cos(phi3)*Radius*scale+Math.cos(phi2)*Radius*scale;
+  S.y=S.y-Math.sin(phi3)*Radius*scale+Math.sin(phi2)*Radius*scale;
+  S.phi=(S.phi+Winkel*rl+360)%360;
+  Schienenlegezug1.setAttribute('transform','translate('+S.x+','+S.y+') rotate('+S.phi+')');
+  Logvar(L2);
+  }
+
+  </script>
 
 </body>
   </html>
