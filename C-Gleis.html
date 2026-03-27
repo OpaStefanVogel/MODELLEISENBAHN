@@ -19,7 +19,32 @@
   <div id='L2' style='display:block; border:solid; margin:10px'>Logfile2</div>
   </div>
 
-<div style='display:flex; flex-direction:row; overflow:auto; height:80%'><div style='flex-direction:column; overflow:auto'>
+<div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
+  <svg> </svg></div></div>
+
+<div id='L3' style='display:block; border:solid; margin:10px; white-space:pre'>Logfile3</div>
+
+
+<script>
+let R=360;
+let d=(Math.sqrt(7)-2)/3*R;
+let m077=d;         //=0*R/3+3*d/3=25.830052442583632
+let m094=(R-d)/3;   //=1*R/3-1*d/3=
+let m172=m094+m077; //=1*R/3+2*d/3=
+let m188=2*m094;    //=2*R/3-2*d/3=
+let r=1; //Rechtskurve
+let l=-1;//Linkskurve
+let scale=0.1;
+let S={}
+S.x=200;
+S.y=100;
+S.phi=0;
+let lfdnr=0;
+let Schienen=[];
+
+Logvar(L1);
+
+let st0=`
   <svg id="Grafik" width="2000" height="2000" style="border:solid 1px black" fill="none" stroke="darkgrey">
     <title>SVG C-Gleis</title>
     <defs>
@@ -42,69 +67,52 @@
         </g>
       </defs>
     <use id='Weiche1' href="#Weiche" transform='translate(50,50) rotate(10)'/>
-    <use id='Schienenlegezug1' href="#Schienenlegezug" transform='translate(200,100) rotate(0)'/>
-    </svg></div></div>
-
-<div id='L3' style='display:block; border:solid; margin:10px; white-space:pre'>Logfile3</div>
-
-
-<script>
-let R=360;
-let d=(Math.sqrt(7)-2)/3*R;
-let m077=d;         //=0*R/3+3*d/3=25.830052442583632
-let m094=(R-d)/3;   //=1*R/3-1*d/3=
-let m172=m094+m077; //=1*R/3+2*d/3=
-let m188=2*m094;    //=2*R/3-2*d/3=
-let r=1; //Rechtskurve
-let l=-1;//Linkskurve
-let scale=0.1;
-let S={}
-S.x=200;
-S.y=100;
-S.phi=0;
-let lfdnr=0;
-
-Logvar(L1);
+    `;
 
 function Logvar(id) {
   let text='';
   text=text+'R='+R+'<br/>m077='+m077+'<br/>m094='+m094+'<br/>m172='+m172+'<br/>m188='+m188+'<br/>m077+3*m094='+(m077+3*m094);
   text=text+'<br/>S='+JSON.stringify(S);
   id.innerHTML=text;
-  L3.innerText=Grafik.outerHTML;
   }
 
 function Gerade(Laenge,Bild) {
   Logvar(L1);
-  let BL=g188.cloneNode(true);
-  BL.setAttribute('id','lfdnr'+lfdnr); lfdnr=lfdnr+1;
-  BL.setAttribute('transform','translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')');
-  //BL.setAttribute('href',Bild);
-  Grafik.appendChild(document.createTextNode("\n  "));
-  Grafik.appendChild(BL);
+  Schienen.push(structuredClone(S));
   S.x=S.x+Math.cos(S.phi/180*Math.PI)*Laenge*scale;
   S.y=S.y+Math.sin(S.phi/180*Math.PI)*Laenge*scale;
-  Schienenlegezug1.setAttribute('transform','translate('+S.x+','+S.y+') rotate('+S.phi+')');
   Logvar(L2);
+  Schienenplot();
   }
 
 function Kurve(Radius,Winkel,rl,Bild) {
   Logvar(L1);
-  let BL=g188.cloneNode(true);
-  BL.setAttribute('id','lfdnr'+lfdnr); lfdnr=lfdnr+1;
-  BL.setAttribute('transform','translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')');
-  //BL.setAttribute('href',Bild);
-  Grafik.appendChild(document.createTextNode("\n  "));
-  Grafik.appendChild(BL);
+  S.Bild=Bild;
+  Schienen.push(structuredClone(S));
   let phi2=(S.phi+90*rl)/180*Math.PI;
   let phi3=(S.phi+90*rl+Winkel*rl)/180*Math.PI;
   S.x=S.x-Math.cos(phi3)*Radius*scale+Math.cos(phi2)*Radius*scale;
   S.y=S.y-Math.sin(phi3)*Radius*scale+Math.sin(phi2)*Radius*scale;
   S.phi=(S.phi+Winkel*rl+360)%360;
-  Schienenlegezug1.setAttribute('transform','translate('+S.x+','+S.y+') rotate('+S.phi+')');
   Logvar(L2);
+  Schienenplot();
   }
 
+let st='';
+function Schienenplot() {
+  st=st0;
+  for (let i=0;i<Schienen.length;i++) {
+    let S=Schienen[i];
+    st=st+'<use id="Schiene'+i+'" href="#g188" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')"/>\n  ';
+    }
+  st=st+'<use id="Schienenlegezug1" href="#Schienenlegezug" transform="translate('+S.x+','+S.y+') rotate('+S.phi+')"/>\n  ';
+
+  st=st+'</svg>';
+  L3.innerText=st;
+  SV.innerHTML=st;
+  }
+
+Schienenplot();
   </script>
 
 </body>
