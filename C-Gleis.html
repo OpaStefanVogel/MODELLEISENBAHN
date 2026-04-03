@@ -8,15 +8,15 @@
 <!-- <EISENB><HILLI>ok hab d=(Math.sqrt(7)-2)/3*R</HILLI></EISENB> -->
 <body>
 <div style='display:flex'>
-  <button style='font-size:300%' onclick='Gerade(m188,"#g188")'>24188</button>
-  <button style='font-size:300%' onclick='Gerade(m172)'>24172</button>
-  <button style='font-size:300%' onclick='Kurve(R,30,r)'>24130r</button>
-  <button style='font-size:300%' onclick='Kurve(R,30,l)'>24130&ell;</button>
+  <button style='font-size:300%' onclick='Gerade(m188,"#g188");Schliessen();Schienenplot();'>24188</button>
+  <button style='font-size:300%' onclick='Gerade(m172,"#g172");Schliessen();Schienenplot();'>24172</button>
+  <button style='font-size:300%' onclick='Kurve(R,30,r,"#k130r");Schliessen();Schienenplot();'>24130r</button>
+  <button style='font-size:300%' onclick='Kurve(R,30,l,"#k130l");Schliessen();Schienenplot();'>24130&ell;</button>
   </div>
 
 <div id='Logfiles' style='display:flex'>
-  <div id='L1' style='display:block; border:solid; margin:10px'>Logfile1</div>
-  <div id='L2' style='display:block; border:solid; margin:10px'>Logfile2</div>
+  <div id='L1' style='display:block; border:solid; margin:10px; max-height:200px; overflow:auto'>Logfile1</div>
+  <div id='L2' style='display:block; border:solid; margin:10px; max-height:200px; overflow:auto'>Logfile2</div>
   </div>
 
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
@@ -41,6 +41,7 @@ S.y=100;
 S.phi=0;
 let lfdnr=0;
 let Schienen=[];
+let Restschienen=[];
 
 Logvar(L1);
 
@@ -63,7 +64,16 @@ let st0=`
         <rect x='0' y='-15' width='80' height='30' fill='gray' opacity='0.5'/>
         </g>
       <g id='g188'>
-        <rect x='0' y='-5' width='178' height='10' fill='green' opacity='0.9'/>
+          <rect x='0' y='-5' width='178' height='10' opacity='0.9'/>
+        </g>
+      <g id='g172'>
+        <rect x='0' y='-5' width='160' height='10' opacity='0.9'/>
+        </g>
+      <g id='k130r'>
+        <rect x='0' y='-5' width='178' height='10' opacity='0.9' transform='rotate(14)'/>
+        </g>
+      <g id='k130l'>
+        <rect x='0' y='-5' width='178' height='10' opacity='0.9' transform='rotate(-14)'/>
         </g>
       </defs>
     <use id='Weiche1' href="#Weiche" transform='translate(50,50) rotate(10)'/>
@@ -73,20 +83,24 @@ function Logvar(id) {
   let text='';
   text=text+'R='+R+'<br/>m077='+m077+'<br/>m094='+m094+'<br/>m172='+m172+'<br/>m188='+m188+'<br/>m077+3*m094='+(m077+3*m094);
   text=text+'<br/>S='+JSON.stringify(S);
+  text=text+'<br/>Schienen='+JSON.stringify(Schienen);
+  text=text+'<br/>Restschienen='+JSON.stringify(Restschienen);
   id.innerHTML=text;
   }
 
 function Gerade(Laenge,Bild) {
   Logvar(L1);
+  S.fun=['Gerade',Laenge,Bild,0,0];
+  S.Bild=Bild;
   Schienen.push(structuredClone(S));
   S.x=S.x+Math.cos(S.phi/180*Math.PI)*Laenge*scale;
   S.y=S.y+Math.sin(S.phi/180*Math.PI)*Laenge*scale;
   Logvar(L2);
-  Schienenplot();
   }
 
 function Kurve(Radius,Winkel,rl,Bild) {
   Logvar(L1);
+  S.fun=['Kurve',Radius,Winkel,rl,Bild];
   S.Bild=Bild;
   Schienen.push(structuredClone(S));
   let phi2=(S.phi+90*rl)/180*Math.PI;
@@ -95,15 +109,36 @@ function Kurve(Radius,Winkel,rl,Bild) {
   S.y=S.y-Math.sin(phi3)*Radius*scale+Math.sin(phi2)*Radius*scale;
   S.phi=(S.phi+Winkel*rl+360)%360;
   Logvar(L2);
-  Schienenplot();
   }
+
+
+function Schliessen() {
+  let S2=[S.x,S.y,S.phi];
+  Restschienen=Schienen;
+  Schienen=[];
+  while (S.phi!=180) Kurve(R,30,r,"#k130r");
+  for (let i=0;i<Restschienen.length;i++) {
+    let Q=Restschienen[i].fun;
+    if (Q[0]=='Gerade') Gerade(Q[1],Q[2],Q[3],Q[4]); else Kurve(Q[1],Q[2],Q[3],Q[4]);
+    }
+  while (S.phi!=0) Kurve(R,30,r,"#k130r");
+  let tz=Restschienen;
+  Restschienen=Schienen;
+  Schienen=tz;
+  S.x=S2[0];S.y=S2[1];S.phi=S2[2];
+  }
+
 
 let st='';
 function Schienenplot() {
   st=st0;
   for (let i=0;i<Schienen.length;i++) {
     let S=Schienen[i];
-    st=st+'<use id="Schiene'+i+'" href="#g188" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')"/>\n  ';
+    st=st+'<use id="Schiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" fill="green"/>\n  ';
+    }
+  for (let i=0;i<Restschienen.length;i++) {
+    let S=Restschienen[i];
+    st=st+'<use id="Schiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" fill="red"/>\n  ';
     }
   st=st+'<use id="Schienenlegezug1" href="#Schienenlegezug" transform="translate('+S.x+','+S.y+') rotate('+S.phi+')"/>\n  ';
 
@@ -117,3 +152,8 @@ Schienenplot();
 
 </body>
   </html>
+
+<!--
+.. L1 L2 ans Ende scrollen
+.. fill in g-Element packen
+  -->
