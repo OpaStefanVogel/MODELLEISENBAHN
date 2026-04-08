@@ -7,16 +7,16 @@
 
 <!-- <EISENB><HILLI>ok hab d=(Math.sqrt(7)-2)/3*R</HILLI></EISENB> -->
 <body>
+<div id='Logfiles' style='display:flex'>
+  <div id='L1' style='display:block; border:solid; margin:10px; height:200px; overflow:auto'>Logfile1</div>
+  <div id='L2' style='display:block; border:solid; margin:10px; height:200px; overflow:auto'>Logfile2</div>
+  </div>
+
 <div style='display:flex'>
   <button style='font-size:300%' onclick='Gerade(m188,"#g188");Schliessen();Schienenplot();'>24188</button>
   <button style='font-size:300%' onclick='Gerade(m172,"#g172");Schliessen();Schienenplot();'>24172</button>
   <button style='font-size:300%' onclick='Kurve(R,30,r,"#k130r");Schliessen();Schienenplot();'>24130r</button>
   <button style='font-size:300%' onclick='Kurve(R,30,l,"#k130l");Schliessen();Schienenplot();'>24130&ell;</button>
-  </div>
-
-<div id='Logfiles' style='display:flex'>
-  <div id='L1' style='display:block; border:solid; margin:10px; max-height:200px; overflow:auto'>Logfile1</div>
-  <div id='L2' style='display:block; border:solid; margin:10px; max-height:200px; overflow:auto'>Logfile2</div>
   </div>
 
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
@@ -126,6 +126,7 @@ function Schliessen() {
   Restschienen=Schienen;
   Schienen=tz;
   S.x=S2[0];S.y=S2[1];S.phi=S2[2];
+  Abkuerzen();
   }
 
 
@@ -147,7 +148,48 @@ function Schienenplot() {
   SV.innerHTML=st;
   }
 
-Schienenplot();
+function Abkuerzen() {
+  let i=0;
+  let such=true;
+  while (such==true) {
+    let RET1=Suche_Muster(Muster[0][0]);
+    let RET2=Suche_Muster(Muster[0][1]);
+    if ((RET1.length>0)&&(RET2.length>0)&&RET1[0]<RET2[0]) Loeschen(RET1,RET2); else such=false;
+    }
+  }
+
+function Suche_Muster(M) {
+  RET=[];
+  for (j=0;j<M[0].length;j++) {
+/*    let S=Restschienen[i+j];
+    let phi0=S.phi;
+    if ((S.Bild==M[j][0])&&(S.phi==phi0+M[j][1])) {
+      RET.push(i+j);
+      alert(S.Bild+' '+S.phi+' i='+i+' j='+j+' RET='+RET);
+      }*/
+    }
+  return RET;
+  }
+
+let Muster=[
+  [[["#g188",0]],[["#g188",180]],[]],
+  ];
+
+function Loeschen(gefunden) {
+  alert('loesche '+RET1+' '+RET2);
+  
+  }
+
+
+
+//Schienenplot();
+
+for (let i=0;i<6;i++) Gerade(m188,"#g188");
+for (let i=0;i<6;i++) Kurve(R,30,r,"#k130r");
+for (let i=0;i<6;i++) Kurve(R,30,l,"#k130l");
+for (let i=0;i<6;i++) Kurve(R,30,r,"#k130r");
+Schliessen(); Schienenplot();
+
   </script>
 
 </body>
