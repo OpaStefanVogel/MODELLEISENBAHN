@@ -22,7 +22,7 @@
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
   <svg> </svg></div></div>
 
-<div id='L3' style='display:block; border:solid; margin:10px; white-space:pre'>Logfile3</div>
+<div id='L3' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto'>Logfile3</div>
 
 
 <script>
@@ -42,6 +42,7 @@ S.phi=0;
 let lfdnr=0;
 let Schienen=[];
 let Restschienen=[];
+let Entfernungen=[];
 
 Logvar(L1);
 
@@ -85,7 +86,9 @@ function Logvar(id) {
   text=text+'<br/>S='+JSON.stringify(S);
   text=text+'<br/>Schienen='+JSON.stringify(Schienen);
   text=text+'<br/>Restschienen='+JSON.stringify(Restschienen);
+  text=text+'<br/>Entfernungen=<br/>'+Entfernungen.join('<br/>');
   id.innerHTML=text;
+  id.scrollTop = id.scrollHeight;
   }
 
 function Gerade(Laenge,Bild) {
@@ -148,32 +151,32 @@ function Schienenplot() {
   SV.innerHTML=st;
   }
 
+let S1=0;
+let S2=0;
 function Abkuerzen() {
   let i=0;
   let such=true;
-  while (such==true) {
-    let RET1=Suche_Muster(Muster[0][0]);
-    let RET2=Suche_Muster(Muster[0][1]);
-    if ((RET1.length>0)&&(RET2.length>0)&&RET1[0]<RET2[0]) Loeschen(RET1,RET2); else such=false;
+  let weitersuch=true;
+  while (such) {
+    Entfernungen=[];
+    for (let i=0;i<Restschienen.length;i++) {
+      S1=Restschienen[i];
+      for (let j=i+1;j<i+7;j++) if (j<Restschienen.length) {
+        S2=Restschienen[j];
+        if (S1.phi==S2.phi) {
+          let dx=S2.x-S1.x;
+          let dy=S2.y-S1.y;
+          let ph=S1.phi/180*Math.PI;
+          let dxn=Math.round((Math.cos(ph)*dx+Math.sin(ph)*dy)*1000)/1000;
+          let dyn=Math.round((-Math.sin(ph)*dx+Math.cos(ph)*dy)*1000)/1000;
+          Entfernungen.push([i,j,S1.phi,dxn,dyn]);
+          }
+        }
+      }
+    such=false;
     }
+  Logvar(L2);
   }
-
-function Suche_Muster(M) {
-  RET=[];
-  for (j=0;j<M[0].length;j++) {
-/*    let S=Restschienen[i+j];
-    let phi0=S.phi;
-    if ((S.Bild==M[j][0])&&(S.phi==phi0+M[j][1])) {
-      RET.push(i+j);
-      alert(S.Bild+' '+S.phi+' i='+i+' j='+j+' RET='+RET);
-      }*/
-    }
-  return RET;
-  }
-
-let Muster=[
-  [[["#g188",0]],[["#g188",180]],[]],
-  ];
 
 function Loeschen(gefunden) {
   alert('loesche '+RET1+' '+RET2);
