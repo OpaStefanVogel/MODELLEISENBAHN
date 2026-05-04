@@ -43,6 +43,7 @@ let lfdnr=0;
 let Schienen=[];
 let Restschienen=[];
 let Entfernungen=[];
+let zu_entfernen=[];
 
 Logvar(L1);
 
@@ -86,7 +87,8 @@ function Logvar(id) {
   text=text+'<br/>S='+JSON.stringify(S);
   text=text+'<br/>Schienen='+JSON.stringify(Schienen);
   text=text+'<br/>Restschienen='+JSON.stringify(Restschienen);
-  text=text+'<br/>Entfernungen=<br/>'+Entfernungen.join('<br/>');
+  text=text+'<br/>Entfernungen=[<br/>'+Entfernungen.join('],<br/>&nbsp;&nbsp;[')+'];<br/>';
+  text=text+'<br/>zu_entfernen=<br/>'+zu_entfernen.join('<br/>');
   id.innerHTML=text;
   id.scrollTop = id.scrollHeight;
   }
@@ -125,6 +127,7 @@ function Schliessen() {
     if (Q[0]=='Gerade') Gerade(Q[1],Q[2],Q[3],Q[4]); else Kurve(Q[1],Q[2],Q[3],Q[4]);
     }
   while (S.phi!=0) Kurve(R,30,r,"#k130r");
+  Gerade(m188,"#g188");
   let tz=Restschienen;
   Restschienen=Schienen;
   Schienen=tz;
@@ -157,7 +160,9 @@ function Abkuerzen() {
   let i=0;
   let such=true;
   let weitersuch=true;
-  while (such) {
+  while (such) {alert(Restschienen.length+'\n'+Restschienen[Restschienen.length-2].Bild);
+    such=false;
+    weitersuch=true;
     Entfernungen=[];
     for (let i=0;i<Restschienen.length;i++) {
       S1=Restschienen[i];
@@ -173,13 +178,36 @@ function Abkuerzen() {
           }
         }
       }
-    such=false;
+    alert('E '+Entfernungen.length+'\n'+Entfernungen[Entfernungen.length-1]);
+    for (let i=0;i<Entfernungen.length;i++) if (weitersuch) {
+      let X=Entfernungen[i];
+      for (let j=i+1;j<Entfernungen.length;j++) if (weitersuch) {
+        let Y=Entfernungen[j];
+        if (((X[2]+180)%360==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4]-Y[4])<0.01)) {Loeschen([X,Y,[]]);weitersuch=false;such=false}
+        }
+      }
     }
-  Logvar(L2);
+  //Logvar(L2);
   }
 
-function Loeschen(gefunden) {
-  alert('loesche '+RET1+' '+RET2);
+function Loeschen([X,Y,N]) {
+  Logvar(L1);
+  Restschienen.splice(Y[0],Y[1]);
+  Restschienen.splice(X[0],X[1]);
+  Logvar(L2);
+  //Ähnlich zu Schließen:
+  let S2=[S.x,S.y,S.phi];
+  let Schmerk=Schienen;
+  Schienen=[];
+  for (let i=0;i<Restschienen.length;i++) {
+    let Q=Restschienen[i].fun;
+    if (Q[0]=='Gerade') Gerade(Q[1],Q[2],Q[3],Q[4]); else Kurve(Q[1],Q[2],Q[3],Q[4]);
+    }
+  Gerade(m188,"#g188");
+  Restschienen=Schienen;
+  Schienen=Schmerk;
+  S.x=S2[0];S.y=S2[1];S.phi=S2[2];
+  alert('loesche X='+X+' und Y='+Y);
   
   }
 
