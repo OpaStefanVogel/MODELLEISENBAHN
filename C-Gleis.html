@@ -45,7 +45,7 @@ let Restschienen=[];
 let Entfernungen=[];
 let zu_entfernen=[];
 
-Logvar(L1);
+Logvar(L1,L1);
 
 let st0=`
   <svg id="Grafik" width="2000" height="2000" style="border:solid 1px black" fill="none" stroke="darkgrey">
@@ -81,30 +81,29 @@ let st0=`
     <use id='Weiche1' href="#Weiche" transform='translate(50,50) rotate(10)'/>
     `;
 
-function Logvar(id) {
+function Logvar(id,id2) {
   let text='';
   text=text+'R='+R+'<br/>m077='+m077+'<br/>m094='+m094+'<br/>m172='+m172+'<br/>m188='+m188+'<br/>m077+3*m094='+(m077+3*m094);
   text=text+'<br/>S='+JSON.stringify(S);
-  text=text+'<br/>Schienen='+JSON.stringify(Schienen);
-  text=text+'<br/>Restschienen='+JSON.stringify(Restschienen);
+  text=text+'<br/><br/><br id="br_Schienen"/>Schienen='+JSON.stringify(Schienen);
+  text=text+'<br/><br/><br id="br_Restschienen"/>Restschienen='+JSON.stringify(Restschienen);
   text=text+'<br/>Entfernungen=[<br/>'+Entfernungen.join('],<br/>&nbsp;&nbsp;[')+'];<br/>';
   text=text+'<br/>zu_entfernen=<br/>'+zu_entfernen.join('<br/>');
+  id2.innerHTML=id.innerHTML;
+  id2.scrollTop = id2.scrollHeight;
   id.innerHTML=text;
   id.scrollTop = id.scrollHeight;
   }
 
 function Gerade(Laenge,Bild) {
-  Logvar(L1);
   S.fun=['Gerade',Laenge,Bild,0,0];
   S.Bild=Bild;
   Schienen.push(structuredClone(S));
   S.x=S.x+Math.cos(S.phi/180*Math.PI)*Laenge*scale;
   S.y=S.y+Math.sin(S.phi/180*Math.PI)*Laenge*scale;
-  Logvar(L2);
   }
 
 function Kurve(Radius,Winkel,rl,Bild) {
-  Logvar(L1);
   S.fun=['Kurve',Radius,Winkel,rl,Bild];
   S.Bild=Bild;
   Schienen.push(structuredClone(S));
@@ -113,7 +112,6 @@ function Kurve(Radius,Winkel,rl,Bild) {
   S.x=S.x-Math.cos(phi3)*Radius*scale+Math.cos(phi2)*Radius*scale;
   S.y=S.y-Math.sin(phi3)*Radius*scale+Math.sin(phi2)*Radius*scale;
   S.phi=(S.phi+Winkel*rl+360)%360;
-  Logvar(L2);
   }
 
 
@@ -132,7 +130,7 @@ function Schliessen() {
   Restschienen=Schienen;
   Schienen=tz;
   S.x=S2[0];S.y=S2[1];S.phi=S2[2];
-  Abkuerzen();
+  //Abkuerzen();
   }
 
 
@@ -152,6 +150,7 @@ function Schienenplot() {
   st=st+'</svg>';
   L3.innerText=st;
   SV.innerHTML=st;
+  Logvar(L2,L1);
   }
 
 let S1=0;
@@ -160,7 +159,7 @@ function Abkuerzen() {
   let i=0;
   let such=true;
   let weitersuch=true;
-  while (such) {alert(Restschienen.length+'\n'+Restschienen[Restschienen.length-2].Bild);
+  while (such) {//alert(Restschienen.length+'\n'+Restschienen[Restschienen.length-2].Bild);
     such=false;
     weitersuch=true;
     Entfernungen=[];
@@ -178,7 +177,7 @@ function Abkuerzen() {
           }
         }
       }
-    alert('E '+Entfernungen.length+'\n'+Entfernungen[Entfernungen.length-1]);
+    //alert('E '+Entfernungen.length+'\n'+Entfernungen[Entfernungen.length-1]);
     for (let i=0;i<Entfernungen.length;i++) if (weitersuch) {
       let X=Entfernungen[i];
       for (let j=i+1;j<Entfernungen.length;j++) if (weitersuch) {
@@ -207,7 +206,7 @@ function Loeschen([X,Y,N]) {
   Restschienen=Schienen;
   Schienen=Schmerk;
   S.x=S2[0];S.y=S2[1];S.phi=S2[2];
-  alert('loesche X='+X+' und Y='+Y);
+  //alert('loesche X='+X+' und Y='+Y);
   
   }
 
@@ -215,11 +214,10 @@ function Loeschen([X,Y,N]) {
 
 //Schienenplot();
 
-for (let i=0;i<6;i++) Gerade(m188,"#g188");
+for (let i=0;i<6;i++) Gerade(m188,"#g188"); Schliessen(); Schienenplot();
 for (let i=0;i<6;i++) Kurve(R,30,r,"#k130r");
 for (let i=0;i<6;i++) Kurve(R,30,l,"#k130l");
-for (let i=0;i<6;i++) Kurve(R,30,r,"#k130r");
-Schliessen(); Schienenplot();
+for (let i=0;i<6;i++) Kurve(R,30,r,"#k130r"); Schliessen(); Schienenplot();
 
   </script>
 
