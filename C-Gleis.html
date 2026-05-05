@@ -119,12 +119,12 @@ function Schliessen() {
   let S2=[S.x,S.y,S.phi];
   Restschienen=Schienen;
   Schienen=[];
-  while (S.phi!=180) Kurve(R,30,r,"#k130r");
+  while (S.phi!=180) if (S.phi<180) Kurve(R,30,r,"#k130r"); else Kurve(R,30,l,"#k130l");
   for (let i=0;i<Restschienen.length;i++) {
     let Q=Restschienen[i].fun;
     if (Q[0]=='Gerade') Gerade(Q[1],Q[2],Q[3],Q[4]); else Kurve(Q[1],Q[2],Q[3],Q[4]);
     }
-  while (S.phi!=0) Kurve(R,30,r,"#k130r");
+  while (S.phi!=0) if (S.phi>180) Kurve(R,30,r,"#k130r"); else Kurve(R,30,l,"#k130l");
   Gerade(m188,"#g188");
   let tz=Restschienen;
   Restschienen=Schienen;
