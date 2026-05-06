@@ -127,7 +127,7 @@ function Schliessen() {
     if (Q[0]=='Gerade') Gerade(Q[1],Q[2],Q[3],Q[4]); else Kurve(Q[1],Q[2],Q[3],Q[4]);
     }
   while (S.phi!=0) if (S.phi>180) Kurve(R,30,r,"#k130r"); else Kurve(R,30,l,"#k130l");
-//  Gerade(m188,"#g188");
+  Gerade(m188,"#g188");
   let tz=Restschienen;
   Restschienen=Schienen;
   Schienen=tz;
@@ -185,6 +185,12 @@ function Abkuerzen() {
       for (let j=i+1;j<Entfernungen.length;j++) if (weitersuch) {
         let Y=Entfernungen[j];
         if (((X[2]+180)%360==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4]-Y[4])<0.01)) {Loeschen([X,Y,[]]);weitersuch=false;such=true}
+        if ((X[2]==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4])>1)&&(Math.abs(X[4]+Y[4])<0.01)) {Loeschen([X,Y,[
+          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",188.33989511483273,"#g188",0,0],"Bild":"#g188"},
+          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",188.33989511483273,"#g188",0,0],"Bild":"#g188"},
+          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",172,"#g172",0,0],"Bild":"#g188"},
+          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",172,"#g172",0,0],"Bild":"#g188"},
+          ]]);weitersuch=false;such=true}
         }
       }
     }
@@ -192,8 +198,8 @@ function Abkuerzen() {
   }
 
 function Loeschen([X,Y,N]) {//alert('Loeschen mit YX: '+Restschienen.length+' Y='+Y+' X='+X);
-  Restschienen.splice(Y[0],Y[1]-Y[0]);//alert('ohne Y: '+Restschienen.length);
-  Restschienen.splice(X[0],X[1]-X[0]);//alert('ohne X: '+Restschienen.length);
+  Restschienen.splice(Y[0],Y[1]-Y[0],...N);//alert('ohne Y: '+Restschienen.length);
+  Restschienen.splice(X[0],X[1]-X[0],...N);//alert('ohne X: '+Restschienen.length);
   Logvar(L2,L1);
   //Ähnlich zu Schließen:
   let S2=[S.x,S.y,S.phi];
