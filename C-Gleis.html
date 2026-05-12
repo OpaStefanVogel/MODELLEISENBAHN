@@ -22,6 +22,7 @@
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
   <svg> </svg></div></div>
 
+<div id='L4' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto'>Logfile4</div>
 <div id='L3' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto'>Logfile3</div>
 
 
@@ -44,6 +45,7 @@ let Schienen=[];
 let Restschienen=[];
 let Entfernungen=[];
 let zu_entfernen=[];
+let Schienenliste='';
 
 Logvar(L1,L1);
 
@@ -93,6 +95,7 @@ function Logvar(id,id2) {
   id2.scrollTop = id2.scrollHeight;
   id.innerHTML=text;
   id.scrollTop = id.scrollHeight;
+  L4.innerHTML=Schienenliste;
   }
 
 function Gerade(Laenge,Bild) {
@@ -126,7 +129,7 @@ function Schliessen() {
     let Q=Restschienen[i].fun;
     if (Q[0]=='Gerade') Gerade(Q[1],Q[2],Q[3],Q[4]); else Kurve(Q[1],Q[2],Q[3],Q[4]);
     }
-  while (S.phi!=0) if (S.phi>180) Kurve(R,30,r,"#k130r"); else Kurve(R,30,l,"#k130l");
+  while (S.phi!=0) if (S.phi>=180) Kurve(R,30,r,"#k130r"); else Kurve(R,30,l,"#k130l");
   Gerade(m188,"#g188");
   let tz=Restschienen;
   Restschienen=Schienen;
@@ -140,8 +143,10 @@ function Schliessen() {
 let st='';
 function Schienenplot() {
   st=st0;
+  Schienenliste='';
   for (let i=0;i<Schienen.length;i++) {
     let S=Schienen[i];
+    Schienenliste=Schienenliste+S.fun[0]+'('+S.fun[1]+','+S.fun[2]+','+S.fun[3]+','+S.fun[4]+');'+'\n';
     st=st+'<use id="Schiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" stroke="green" stroke-width="30"/>\n  ';
     }
   for (let i=0;i<Restschienen.length;i++) {
@@ -153,6 +158,7 @@ function Schienenplot() {
   st=st+'</svg>';
   L3.innerText=st;
   SV.innerHTML=st;
+  L4.innerHTML=Schienenliste;
   }
 
 let S1=0;
@@ -167,7 +173,7 @@ function Abkuerzen() {
     Entfernungen=[];
     for (let i=0;i<Restschienen.length;i++) {
       S1=Restschienen[i];
-      for (let j=i+1;j<i+7;j++) if (j<Restschienen.length) {
+      for (let j=i+1;j<i+23;j++) if (j<Restschienen.length) {
         S2=Restschienen[j];
         if (S1.phi==S2.phi) {
           let dx=S2.x-S1.x;
@@ -184,8 +190,9 @@ function Abkuerzen() {
       let X=Entfernungen[i];
       for (let j=i+1;j<Entfernungen.length;j++) if (weitersuch) {
         let Y=Entfernungen[j];
-        if (((X[2]+180)%360==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4]-Y[4])<0.01)) {Loeschen([X,Y,[]]);weitersuch=false;such=true}
-        if ((X[2]==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4]-2*R*scale)<0.01)&&(Math.abs(X[4]+Y[4])<0.01)) {Loeschen([X,Y,[
+        if (weitersuch&&(Math.abs(X[3])<0.01)&&(Math.abs(X[4])<0.01)) {Loeschen([X,[0,0,0,0],[]]);weitersuch=false;such=true}
+        if (weitersuch&&((X[2]+180)%360==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4]-Y[4])<0.01)) {Loeschen([X,Y,[]]);weitersuch=false;such=true}
+        if (weitersuch&&(X[2]==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4]-2*R*scale)<0.01)&&(Math.abs(X[4]+Y[4])<0.01)) {Loeschen([X,Y,[
           {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",188.33989511483273,"#g188",0,0],"Bild":"#g188"},
           {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",188.33989511483273,"#g188",0,0],"Bild":"#g188"},
           {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",172,"#g172",0,0],"Bild":"#g188"},
@@ -200,7 +207,7 @@ function Abkuerzen() {
 function Loeschen([X,Y,N]) {//alert('Loeschen mit YX: '+Restschienen.length+' Y='+Y+' X='+X);
   Restschienen.splice(Y[0],Y[1]-Y[0],...N);//alert('ohne Y: '+Restschienen.length);
   Restschienen.splice(X[0],X[1]-X[0],...N);//alert('ohne X: '+Restschienen.length);
-  Logvar(L2,L1);
+//  Logvar(L2,L1);
   //Ähnlich zu Schließen:
   let S2=[S.x,S.y,S.phi];
   let Schmerk=Schienen;
@@ -219,19 +226,69 @@ function Loeschen([X,Y,N]) {//alert('Loeschen mit YX: '+Restschienen.length+' Y=
 
 
 
-//Schienenplot();
-
-for (let i=0;i<6;i++) Gerade(m188,"#g188"); Schliessen(); Schienenplot();
-for (let i=0;i<6;i++) Kurve(R,30,r,"#k130r");
-for (let i=0;i<6;i++) Kurve(R,30,l,"#k130l");
-for (let i=0;i<6;i++) Kurve(R,30,r,"#k130r"); Schliessen(); Schienenplot();
-
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+//Schliessen(); Schienenplot();
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,-1,'#k130l');
+Kurve(360,30,-1,'#k130l');
+Kurve(360,30,-1,'#k130l');
+Kurve(360,30,-1,'#k130l');
+Kurve(360,30,-1,'#k130l');
+Kurve(360,30,-1,'#k130l');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Kurve(360,30,1,'#k130r');
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Gerade(188.33989511483273,'#g188',0,0);
+Logvar(L2,L1);
+Schliessen(); 
+Schienenplot();
+Logvar(L2,L1);
   </script>
 
 </body>
   </html>
 
 <!--
-.. L1 L2 ans Ende scrollen
+ok L1 L2 ans Ende scrollen
 .. fill in g-Element packen
+.. svg viewport fortlaufend anpassen
   -->
