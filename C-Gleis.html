@@ -63,19 +63,19 @@ let st0=`
         <circle id="ger" cx="90" cy="55" r="5" fill="orange"/>
         </g>
       <g id='Schienenlegezug'>
-        <rect x='0' y='-15' width='80' height='30' fill='gray' opacity='0.5'/>
+        <rect x='0' y='-15' width='80' height='30' fill='gray' stroke='none' opacity='0.5'/>
         </g>
       <g id='g188'>
-          <rect x='0' y='-5' width='178' height='10' opacity='0.9'/>
+        <path d='m 0,0 l 178,0'/>
         </g>
       <g id='g172'>
-        <rect x='0' y='-5' width='160' height='10' opacity='0.9'/>
+        <path d='m 0,0 l 160,0'/>
         </g>
       <g id='k130r'>
-        <rect x='0' y='-5' width='178' height='10' opacity='0.9' transform='rotate(14)'/>
+        <path d='m 0,0 a360,360,0 0,1 170,43'/>
         </g>
       <g id='k130l'>
-        <rect x='0' y='-5' width='178' height='10' opacity='0.9' transform='rotate(-14)'/>
+        <path d='m 0,0 a360,360,0 0,0 170,-43'/>
         </g>
       </defs>
     <use id='Weiche1' href="#Weiche" transform='translate(50,50) rotate(10)'/>
@@ -142,11 +142,11 @@ function Schienenplot() {
   st=st0;
   for (let i=0;i<Schienen.length;i++) {
     let S=Schienen[i];
-    st=st+'<use id="Schiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" fill="green"/>\n  ';
+    st=st+'<use id="Schiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" stroke="green" stroke-width="30"/>\n  ';
     }
   for (let i=0;i<Restschienen.length;i++) {
     let S=Restschienen[i];
-    st=st+'<use id="Schiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" fill="red"/>\n  ';
+    st=st+'<use id="Schiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" stroke="red" stroke-width="30" opacity="0.3"/>\n  ';
     }
   st=st+'<use id="Schienenlegezug1" href="#Schienenlegezug" transform="translate('+S.x+','+S.y+') rotate('+S.phi+')"/>\n  ';
 
@@ -185,7 +185,7 @@ function Abkuerzen() {
       for (let j=i+1;j<Entfernungen.length;j++) if (weitersuch) {
         let Y=Entfernungen[j];
         if (((X[2]+180)%360==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4]-Y[4])<0.01)) {Loeschen([X,Y,[]]);weitersuch=false;such=true}
-        if ((X[2]==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4])>1)&&(Math.abs(X[4]+Y[4])<0.01)) {Loeschen([X,Y,[
+        if ((X[2]==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4]-2*R*scale)<0.01)&&(Math.abs(X[4]+Y[4])<0.01)) {Loeschen([X,Y,[
           {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",188.33989511483273,"#g188",0,0],"Bild":"#g188"},
           {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",188.33989511483273,"#g188",0,0],"Bild":"#g188"},
           {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",172,"#g172",0,0],"Bild":"#g188"},
