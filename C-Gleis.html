@@ -13,10 +13,10 @@
   </div>
 
 <div style='display:flex'>
-  <button style='font-size:300%' onclick='Gerade(m188,"#g188");Schliessen();Schienenplot();'>24188</button>
-  <button style='font-size:300%' onclick='Gerade(m172,"#g172");Schliessen();Schienenplot();'>24172</button>
-  <button style='font-size:300%' onclick='Kurve(R,30,r,"#k130r");Schliessen();Schienenplot();'>24130r</button>
-  <button style='font-size:300%' onclick='Kurve(R,30,l,"#k130l");Schliessen();Schienenplot();'>24130&ell;</button>
+  <button style='font-size:300%' onclick='Gerade("#g188",m188);Schliessen();Schienenplot();'>24188</button>
+  <button style='font-size:300%' onclick='Gerade("#g172",m172);Schliessen();Schienenplot();'>24172</button>
+  <button style='font-size:300%' onclick='Kurve("#k130r",R,30,r);Schliessen();Schienenplot();'>24130r</button>
+  <button style='font-size:300%' onclick='Kurve("#k130l",R,30,l);Schliessen();Schienenplot();'>24130&ell;</button>
   </div>
 
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
@@ -98,18 +98,18 @@ function Logvar(id,id2) {
   L4.innerHTML=Schienenliste;
   }
 
-function Gerade(Laenge,Bild) {
+function Gerade(Bild,Laenge) {
   S.lfdnr=lfdnr; lfdnr=lfdnr+1;
-  S.fun=['Gerade',Laenge,Bild,0,0];
+  S.fun=['Gerade',Bild,Laenge,0,0];
   S.Bild=Bild;
   Schienen.push(structuredClone(S));
   S.x=S.x+Math.cos(S.phi/180*Math.PI)*Laenge*scale;
   S.y=S.y+Math.sin(S.phi/180*Math.PI)*Laenge*scale;
   }
 
-function Kurve(Radius,Winkel,rl,Bild) {
+function Kurve(Bild,Radius,Winkel,rl) {
   S.lfdnr=lfdnr; lfdnr=lfdnr+1;
-  S.fun=['Kurve',Radius,Winkel,rl,Bild];
+  S.fun=['Kurve',Bild,Radius,Winkel,rl];
   S.Bild=Bild;
   Schienen.push(structuredClone(S));
   let phi2=(S.phi+90*rl)/180*Math.PI;
@@ -124,13 +124,13 @@ function Schliessen() {
   let S2=[S.x,S.y,S.phi];
   Restschienen=Schienen;
   Schienen=[];
-  while (S.phi!=180) if (S.phi<180) Kurve(R,30,r,"#k130r"); else Kurve(R,30,l,"#k130l");
+  while (S.phi!=180) if (S.phi<180) Kurve("#k130r",R,30,r); else Kurve("#k130l",R,30,l);
   for (let i=0;i<Restschienen.length;i++) {
     let Q=Restschienen[i].fun;
     if (Q[0]=='Gerade') Gerade(Q[1],Q[2],Q[3],Q[4]); else Kurve(Q[1],Q[2],Q[3],Q[4]);
     }
-  while (S.phi!=0) if (S.phi>=180) Kurve(R,30,r,"#k130r"); else Kurve(R,30,l,"#k130l");
-  Gerade(m188,"#g188");
+  while (S.phi!=0) if (S.phi>=180) Kurve("#k130r",R,30,r); else Kurve("#k130l",R,30,l);
+  Gerade("#g188",m188);
   let tz=Restschienen;
   Restschienen=Schienen;
   Schienen=tz;
@@ -146,7 +146,7 @@ function Schienenplot() {
   Schienenliste='';
   for (let i=0;i<Schienen.length;i++) {
     let S=Schienen[i];
-    Schienenliste=Schienenliste+S.fun[0]+'('+S.fun[1]+','+S.fun[2]+','+S.fun[3]+','+S.fun[4]+');'+'\n';
+    Schienenliste=Schienenliste+S.fun[0]+"('"+S.fun[1]+"',"+S.fun[2]+','+S.fun[3]+','+S.fun[4]+');'+'\n';
     st=st+'<use id="Schiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" stroke="green" stroke-width="30"/>\n  ';
     }
   for (let i=0;i<Restschienen.length;i++) {
@@ -190,13 +190,18 @@ function Abkuerzen() {
       let X=Entfernungen[i];
       for (let j=i+1;j<Entfernungen.length;j++) if (weitersuch) {
         let Y=Entfernungen[j];
+        //if (X[0]==16&&Y[0]==18) alert(X+'\n'+Y+'\n'+(X[2]==Y[2])+'\n'+(Math.abs(X[3]-Y[3])<0.01)+'\n'+(Math.abs(X[3]-1*R*scale))+'\n'+(Math.abs(X[4]+Y[4])<0.01));
         if (weitersuch&&(Math.abs(X[3])<0.01)&&(Math.abs(X[4])<0.01)) {Loeschen([X,[0,0,0,0],[]]);weitersuch=false;such=true}
         if (weitersuch&&((X[2]+180)%360==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4]-Y[4])<0.01)) {Loeschen([X,Y,[]]);weitersuch=false;such=true}
-        if (weitersuch&&(X[2]==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[4]-2*R*scale)<0.01)&&(Math.abs(X[4]+Y[4])<0.01)) {Loeschen([X,Y,[
-          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",188.33989511483273,"#g188",0,0],"Bild":"#g188"},
-          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",188.33989511483273,"#g188",0,0],"Bild":"#g188"},
-          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",172,"#g172",0,0],"Bild":"#g188"},
-          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade",172,"#g172",0,0],"Bild":"#g188"},
+        if (weitersuch&&(X[2]==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[3]-1*R*scale)<0.01)&&(Math.abs(X[4]+Y[4])<0.01)) {Loeschen([X,Y,[
+          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade","#g188",188.33989511483273,0,0],"Bild":"#g188"},
+          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade","#g172",172,0,0],"Bild":"#g172"},
+          ]]);weitersuch=false;such=true}
+        if (weitersuch&&(X[2]==Y[2])&&(Math.abs(X[3]-Y[3])<0.01)&&(Math.abs(X[3]-2*R*scale)<0.01)&&(Math.abs(X[4]+Y[4])<0.01)) {Loeschen([X,Y,[
+          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade","#g188",188.33989511483273,0,0],"Bild":"#g188"},
+          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade","#g172",172,0,0],"Bild":"#g172"},
+          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade","#g188",188.33989511483273,0,0],"Bild":"#g188"},
+          {"x":313.0039370688996,"y":316,"phi":180,"lfdnr":42,"fun":["Gerade","#g172",172,0,0],"Bild":"#g172"},
           ]]);weitersuch=false;such=true}
         }
       }
@@ -226,58 +231,61 @@ function Loeschen([X,Y,N]) {//alert('Loeschen mit YX: '+Restschienen.length+' Y=
 
 
 
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
 //Schliessen(); Schienenplot();
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,-1,'#k130l');
-Kurve(360,30,-1,'#k130l');
-Kurve(360,30,-1,'#k130l');
-Kurve(360,30,-1,'#k130l');
-Kurve(360,30,-1,'#k130l');
-Kurve(360,30,-1,'#k130l');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Kurve(360,30,1,'#k130r');
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
-Gerade(188.33989511483273,'#g188',0,0);
+Kurve("#k130r",360,30,1);
+Kurve("#k130r",360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130l',360,30,-1);
+Kurve('#k130l',360,30,-1);
+Kurve('#k130l',360,30,-1);
+Kurve('#k130l',360,30,-1);
+Kurve('#k130l',360,30,-1);
+Kurve('#k130l',360,30,-1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Kurve('#k130r',360,30,1);
+Kurve('#k130l',360,30,-1);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Kurve('#k130l',360,30,-1);
+Kurve('#k130r',360,30,1);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
+Gerade('#g188',188.33989511483273,0,0);
 Logvar(L2,L1);
 Schliessen(); 
 Schienenplot();
