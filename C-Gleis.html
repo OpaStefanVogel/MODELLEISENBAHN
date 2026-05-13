@@ -21,36 +21,6 @@
   </div>
 
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
-  <svg> </svg></div></div>
-
-<div id='L4' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto'>Logfile4</div>
-<div id='L3' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto'>Logfile3</div>
-
-
-<script>
-let R=360;
-let d=(Math.sqrt(7)-2)/3*R;
-let m077=d;         //=0*R/3+3*d/3=25.830052442583632
-let m094=(R-d)/3;   //=1*R/3-1*d/3=
-let m172=m094+m077; //=1*R/3+2*d/3=
-let m188=2*m094;    //=2*R/3-2*d/3=
-let r=1; //Rechtskurve
-let l=-1;//Linkskurve
-let scale=0.1;
-let S={}
-S.x=300;
-S.y=200;
-S.phi=0;
-let lfdnr=0;
-let Schienen=[];
-let Restschienen=[];
-let Schienenliste='';
-let h=[0,0];
-let v=[0,0];
-
-Logvar(L1,L1);
-
-let st0=`
   <svg id="Grafik" width="2000" height="2000" style="border:solid 1px black" fill="none" stroke="darkgrey">
     <title>SVG C-Gleis</title>
     <defs>
@@ -81,6 +51,40 @@ let st0=`
         <path d='m 0,0 a360,360,0 0,0 170,-43'/>
         </g>
       </defs>
+    <g id='content'>
+    <use id='Weiche1' href="#Weiche" transform='translate(50,50) rotate(10)'/>
+    
+    </g>
+  </svg></div></div>
+
+<div id='L4' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto'>Logfile4</div>
+<div id='L3' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto'>Logfile3</div>
+
+
+<script>
+let R=360;
+let d=(Math.sqrt(7)-2)/3*R;
+let m077=d;         //=0*R/3+3*d/3=25.830052442583632
+let m094=(R-d)/3;   //=1*R/3-1*d/3=
+let m172=m094+m077; //=1*R/3+2*d/3=
+let m188=2*m094;    //=2*R/3-2*d/3=
+let r=1; //Rechtskurve
+let l=-1;//Linkskurve
+let scale=0.1;
+let S={}
+S.x=300;
+S.y=200;
+S.phi=0;
+let lfdnr=0;
+let Schienen=[];
+let Restschienen=[];
+let Schienenliste='';
+let h=[0,0];
+let v=[0,0];
+
+Logvar(L1,L1);
+
+let st0=`
     <use id='Weiche1' href="#Weiche" transform='translate(50,50) rotate(10)'/>
     `;
 
@@ -134,9 +138,9 @@ function Schienenplot() {
     }
   st=st+'<use id="Schienenlegezug1" href="#Schienenlegezug" transform="translate('+S.x+','+S.y+') rotate('+S.phi+')"/>\n  ';
 
-  st=st+'</svg>';
+  st=st+'';
   L3.innerText=st;
-  SV.innerHTML=st;
+  content.innerHTML=st;
   L4.innerHTML=Schienenliste;
   }
 
