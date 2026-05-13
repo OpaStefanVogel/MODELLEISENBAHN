@@ -153,7 +153,7 @@ function Schienenplot() {
     }
   for (let i=0;i<Restschienen.length;i++) {
     let S=Restschienen[i];
-    st=st+'<use id="Schiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" stroke="red" stroke-width="30" opacity="0.3"/>\n  ';
+    st=st+'<use id="Schiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" stroke="red" stroke-width="30" opacity="0.1"/>\n  ';
     }
   st=st+'<use id="Schienenlegezug1" href="#Schienenlegezug" transform="translate('+S.x+','+S.y+') rotate('+S.phi+')"/>\n  ';
 
@@ -175,7 +175,7 @@ function Abkuerzen() {
     Entfernungen=[];
     for (let i=0;i<Restschienen.length;i++) {
       S1=Restschienen[i];
-      for (let j=i+1;j<i+23;j++) if (j<Restschienen.length) {
+      for (let j=i+1;j<Restschienen.length;j++) if (j<Restschienen.length) {
         S2=Restschienen[j];
         if (S1.phi==S2.phi) {
           let dx=S2.x-S1.x;
@@ -217,7 +217,7 @@ function Abkuerzen() {
   //Logvar(L2);
   }
 
-function Loeschen(X,Y,N,nr) {alert('Loeschen mit YX: '+Restschienen.length+' Y='+Y+' X='+X+' nr='+nr);
+function Loeschen(X,Y,N,nr) {//alert('Loeschen mit YX: '+Restschienen.length+' Y='+Y+' X='+X+' nr='+nr);
   Restschienen.splice(Y[0],Y[1]-Y[0],...structuredClone(N));//alert('ohne Y: '+Restschienen.length);
   Restschienen.splice(X[0],X[1]-X[0],...structuredClone(N));//alert('ohne X: '+Restschienen.length);
 //  Logvar(L2,L1);
@@ -244,6 +244,12 @@ function Spop() {
   S.phi=L.phi;
   }
 
+function m188m172such(d) {
+  let i0=-1000;
+  let j0=-1000;
+  for (let i=-20;i<20;i++) for (let j=-20;j<20;j++) if (Math.abs((i*m188+j*m172)*scale-d)<0.01) {i0=i; j0=j};
+  return [i0,j0];
+  }
 
 Gerade('#g188',188.33989511483273,0,0);
 Gerade('#g188',188.33989511483273,0,0);
@@ -264,7 +270,7 @@ Kurve('#k130l',360,30,-1);
 Kurve('#k130l',360,30,-1);
 Kurve('#k130l',360,30,-1);
 Kurve('#k130l',360,30,-1);
-/*Kurve('#k130r',360,30,1);
+Kurve('#k130r',360,30,1);
 Kurve('#k130r',360,30,1);
 Kurve('#k130r',360,30,1);
 Kurve('#k130r',360,30,1);
@@ -312,9 +318,11 @@ Gerade('#g188',188.33989511483273,0,0);
 Gerade('#g172',171.66010488516724,0,0);
 Gerade('#g172',171.66010488516724,0,0);
 Gerade('#g188',188.33989511483273,0,0);
-Gerade('#g188',188.33989511483273,0,0);*/
+Gerade('#g188',188.33989511483273,0,0);
 Schliessen(); 
 Schienenplot();
+
+alert(m188m172such(Schienen[0].x-S.x)+'   '+m188m172such(Schienen[0].y-S.y));
   </script>
 
 </body>
