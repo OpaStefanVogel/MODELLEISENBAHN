@@ -81,7 +81,14 @@ let Restschienen=[];
 let Schienenliste='';
 let h=[0,0];
 let v=[0,0];
-let Distanzmerkliste=[];
+let Distanzmerkliste=[
+  0,
+  17.999999999999996,
+  18.833989511483274,
+  17.166010488516726,
+  4.823085463760208,
+  13.1769145362398
+  ];
 
 Logvar(L1,L1);
 
@@ -117,6 +124,8 @@ function Gerade(Bild,Laenge) {
   let dyi=Distanz(dy);
   if (dx<0) S.dmlx[dxi]=S.dmlx[dxi]-1; else S.dmlx[dxi]=S.dmlx[dxi]+1;
   if (dy<0) S.dmly[dyi]=S.dmly[dyi]-1; else S.dmly[dyi]=S.dmly[dyi]+1;
+  Distanzsumme(S.dmlx);
+  Distanzsumme(S.dmly);
   S.x=S.x+dx;
   S.y=S.y+dy;
   }
@@ -134,10 +143,10 @@ function Kurve(Bild,Radius,Winkel,rl) {
   let dyi=Distanz(dy);
   if (dx<0) S.dmlx[dxi]=S.dmlx[dxi]-1; else S.dmlx[dxi]=S.dmlx[dxi]+1;
   if (dy<0) S.dmly[dyi]=S.dmly[dyi]-1; else S.dmly[dyi]=S.dmly[dyi]+1;
+  Distanzsumme(S.dmlx);
+  Distanzsumme(S.dmly);
   S.x=S.x+dx;
   S.y=S.y+dy;
-  Distanz(dx);
-  Distanz(dy);
   S.phi=(S.phi+Winkel*rl+360)%360;
   }
 
@@ -219,6 +228,14 @@ function Distanz(d) {
   for (let i=0;i<Distanzmerkliste.length;i++) if (Math.abs(Distanzmerkliste[i]-da)<0.01) i0=i;
   if (i0==-1) {i0=Distanzmerkliste.length; Distanzmerkliste.push(da)}
   return i0;
+  }
+
+function Distanzsumme(dl) {
+  while (dl[2]>0&&dl[3]>0) {dl[2]=dl[2]-1; dl[3]=dl[3]-1; dl[1]=dl[1]+2}
+  while (dl[2]<0&&dl[3]<0) {dl[2]=dl[2]+1; dl[3]=dl[3]+1; dl[1]=dl[1]-2}
+  while (dl[4]>0&&dl[5]>0) {dl[4]=dl[4]-1; dl[5]=dl[5]-1; dl[1]=dl[1]+1}
+  while (dl[4]<0&&dl[5]<0) {dl[4]=dl[4]+1; dl[5]=dl[5]+1; dl[1]=dl[1]-1}
+  
   }
 
 
