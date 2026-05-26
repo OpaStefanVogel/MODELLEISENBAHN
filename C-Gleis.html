@@ -93,6 +93,8 @@ let Distanzmerkliste=[
   14.8662, //14
   8.58300, // 8
   ];
+let Kurvenliste_l=[];
+let Kurvenliste_r=[];
 
 Logvar(L1,L1);
 
@@ -122,6 +124,9 @@ function Logvar(id,id2) {
     }
   text=text+';<br/>\n';
   text=text+'<br/><br/>h=['+h+']; v=['+v+'];<br/>\n';
+  text=text+'Kurvenliste_r=['+Kurvenliste_l.sort()+'];<br/>\n';
+  text=text+'Kurvenliste_l=['+Kurvenliste_r.sort()+'];<br/>\n';
+  text=text+'Kurvenliste_r.length-Kurvenliste_l.length='+Kurvenliste_r.length+'-'+Kurvenliste_l.length+'='+(Kurvenliste_r.length-Kurvenliste_l.length)+';<br/>\n';
   id2.innerHTML=id.innerHTML;
   id2.scrollTop = id2.scrollHeight;
   id.innerHTML=text;
@@ -163,6 +168,7 @@ function Kurve(Bild,Radius,Winkel,rl) {
   Distanzsumme(S.dmly);
   S.x=S.x+dx;
   S.y=S.y+dy;
+  if (rl==1) Kurvenliste_r.push('r'+S.phi); else Kurvenliste_l.push('l'+S.phi); 
   S.phi=(S.phi+Winkel*rl+360)%360;
   }
 
@@ -649,7 +655,7 @@ g188();
 g188();
  }
 
-//Aufgabe4:
+function Aufgabe4() {
 g188();
 k130r();
 k130l();
@@ -787,7 +793,117 @@ g188();
 g188();
 g188();
 k130r();
+  }
 
+//g188();
+Aufgabe();
+Aufgabe();
+Aufgabe();
+
+/*
+Aufgabe4();
+Aufgabe4();
+g188();
+k130r();
+k130l();
+k130r();
+k130l();
+k130r();
+k130l();
+k130l();
+k130l();
+k130l();
+k130r();
+k130r();
+g188();
+g188();
+k130l();
+k130r();
+k130r();
+g188();
+k130r();
+g188();
+g188();
+k130l();
+k130r();
+k130l();
+g188();
+g188();
+g188();
+k130r();
+k130r();
+g188();
+g188();
+k130l();
+k130l();
+k130l();
+k130l();
+k130r();
+k130r();
+g188();
+g188();
+g188();
+g188();
+g188();
+g188();
+g188();
+k130r();
+k130r();
+g188();
+g188();
+g188();
+k130l();
+k130r();
+k130l();
+k130r();
+k130r();
+k130r();
+g188();
+g188();
+g188();
+k130r();
+k130r();
+g188();
+g188();
+k130l();
+g188();
+g188();
+g188();
+g188();
+g188();
+k130r();
+k130r();
+g188();
+g188();
+g188();
+g188();
+g188();
+k130r();
+k130r();
+k130r();
+k130r();
+k130r();
+g188();
+g188();
+g188();
+k130r();
+k130l();
+g188();
+g188();
+k130l();
+k130l();
+k130l();
+k130r();
+k130l();
+k130l();
+k130l();
+g188();
+g188();
+g188();
+k130l();
+*/
+
+/*
 //Teillösung4
 k130l();
 k130l();
@@ -918,6 +1034,7 @@ k130r();
 k130r();
 k130r();
 k130r();
+*/
 
 /*
 Aufgabe3();
