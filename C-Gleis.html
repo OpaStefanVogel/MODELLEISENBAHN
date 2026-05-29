@@ -208,37 +208,39 @@ function m188m172such(d) {
 function Schliessen() {
   fuelle_Ausgangsmatrix();
   Los();//startet Plus4.html
+  weiter100.click(); //
   let Schiene0=structuredClone(Schienen[0]);
   let S2=structuredClone(S);
   Restschienen=Schienen;
   Schienen=[];
-  while (S.phi<180) Kurve("#k130r",R,30,r);
-  h=m188m172such(Schiene0.x-S.x);
-  v=m188m172such(Schiene0.y-S.y);
-  if (S.phi==180&&v[0]<-1&&v[1]<-1) {
-    for (let i=0;i<-h[0];i++) Gerade('#g188',m188,0,0);
-    for (let i=0;i<-h[1];i++) Gerade('#g172',m172,0,0);
-    Kurve("#k130r",R,30,r); 
-    Kurve("#k130r",R,30,r); 
-    Kurve("#k130r",R,30,r);
-    for (let i=0;i<-v[0]-2;i++) Gerade('#g188',m188,0,0);
-    for (let i=0;i<-v[1]-2;i++) Gerade('#g172',m172,0,0);
-    Kurve("#k130r",R,30,r); 
-    Kurve("#k130r",R,30,r); 
-    Kurve("#k130r",R,30,r);
-    for (let i=0;i<h[0];i++) Gerade('#g188',m188,0,0);
-    for (let i=0;i<h[1];i++) Gerade('#g172',m172,0,0);
-    }
-//  while (S.phi<270) Kurve("#k130r",R,30,r);
-  if (S.phi==270&&h[0]>0&&h[1]>0&&v[0]<0&&v[1]<0) {
-    for (let i=0;i<-v[0]-1;i++) Gerade('#g188',m188,0,0);
-    for (let i=0;i<-v[1]-1;i++) Gerade('#g172',m172,0,0);
-    Kurve("#k130r",R,30,r); 
-    Kurve("#k130r",R,30,r); 
-    Kurve("#k130r",R,30,r);
-    for (let i=0;i<h[0]-1;i++) Gerade('#g188',m188,0,0);
-    for (let i=0;i<h[1]-1;i++) Gerade('#g172',m172,0,0);
-    }
+  
+  let A=Ausgangsmatrix;
+  let g=gemeinsamer_Nenner;
+k130r(); //von 0 zu 30
+k130r(); //von 30 zu 60
+k130r(); //von 60 zu 90
+k130r(); //von 90 zu 120
+k130r(); //von 120 zu 150
+k130r(); //von 150 zu 180
+k130r(); //von 180 zu 210
+k130r(); //von 210 zu 240
+
+k130r();
+k130l();
+k130r();
+k130l();
+
+k130r(); //von 240 zu 270
+for (let i=0;i<A[-1-D[28]][0]/g;i++) g188(); //x28
+for (let i=0;i<A[-1-D[29]][0]/g;i++) g172(); //x29
+k130r(); //von 270 zu 300
+k130r(); //von 300 zu 330
+k130r(); //von 330 zu 360
+
+for (let i=0;i<A[-1-D[1]][0]/g;i++) g188(); //x1
+for (let i=0;i<A[-1-D[2]][0]/g;i++) g172(); //x2
+
+
   let tz=Restschienen;
   Restschienen=Schienen;
   Schienen=tz;
