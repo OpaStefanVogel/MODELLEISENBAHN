@@ -1649,7 +1649,7 @@ function Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p) {
   </script>
   
 <script>
-function fuelle_Ausgangsmatrix() {
+function fuelle_Ausgangsmatrix(ausblenden) {
 //Ausgangsmatrix zu Aufgabe6:
 
 Ausgangsmatrix=[
@@ -1706,7 +1706,7 @@ Ausgangsmatrix=[
     Ausgangsmatrix[18+2*i+1][0]=S.dmly[i+1];
     Ausgangsmatrix[18+2*i+2][0]=-S.dmly[i+1];
     }
-  
+  for (let i=0;i<Ausgangsmatrix.length;i++) for (let j=0;j<ausblenden.length;j++) Ausgangsmatrix[i][ausblenden[j]]=0;
   }
   </script>
 
@@ -1716,16 +1716,19 @@ function k115r() { Kurve('#k130l',180,30,-1) }
 function k115l() { Kurve('#k130r',180,30,1) }
 function zeichnex(d,A,C,g) {
   if (C[d]>0) {
-    let q=A[C[d]][0]/g;
+    let q=A[C[d]][0]/g;//alert(q);
 //    if (q!=Math.round(q)) alert (q);
 //    for (let i=0;i<q;i++) { k115l(); k115r()} //if (i%2) k130l(); else k130r()
-    Kurve('#k130r',180*q,30,1)
-    Kurve('#k130l',180*q,30,-1)
+    if (q>0.01) if (q%2!=0) {
+      Kurve('#k130r',180*q,30,1);
+      Kurve('#k130l',180*q,30,-1);
+      } else for (let i=0;i<q/2;i++) { k130r(); k130l()}
     }
   }
 
+let redInd=[]
 function Schliessen() {
-  fuelle_Ausgangsmatrix();
+  fuelle_Ausgangsmatrix(redInd); 
   Los();//startet Plus4.html
   weiter100.click(); //
   let Schiene0=structuredClone(Schienen[0]);
@@ -1738,7 +1741,7 @@ function Schliessen() {
   let C=[];
   for (let i=0;i<D.length;i++) C[i]=-1;
   for (let i=0;i<B.length;i++) if (B[i]>0) C[B[i]]=i;
-
+//alert(C);
 zeichnex(3,A,C,g);
 k130r(); //von 0 zu 30
 zeichnex(6,A,C,g);
@@ -1791,7 +1794,11 @@ k130l();
 */
 g188();
 g172();
-let zm=1;
+let zm=12; 
+redInd=([[18],[15,18],[18],[15,18],[12,18],[18],[15,18],[3,6],[3],[3,6],[18],[18]])[zm%12];
+//0:[18]; 1:[15,18]; 2:[18]; 3:[15,18];
+//4:[12,18]; 5:[18]; 6:[15,18]; 7:[3,6]; 
+//8:[3]; 9:[3,6]; 10:[18]; 11:[18];
 for (let z=0;z<zm;z++) k130l();
 k130l();k130r();//k130l();k130r();
 for (let z=0;z<zm;z++) k130r();
