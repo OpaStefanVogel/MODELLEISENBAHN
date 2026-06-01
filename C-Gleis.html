@@ -94,6 +94,7 @@ let Distanzmerkliste=[
   ];
 let Kurvenliste_l=[];
 let Kurvenliste_r=[];
+let x3x=[];
 
 Logvar(L1,L1);
 
@@ -126,6 +127,7 @@ function Logvar(id,id2) {
   text=text+'Kurvenliste_r=['+Kurvenliste_l.sort()+'];<br/>\n';
   text=text+'Kurvenliste_l=['+Kurvenliste_r.sort()+'];<br/>\n';
   text=text+'Kurvenliste_r.length-Kurvenliste_l.length='+Kurvenliste_r.length+'-'+Kurvenliste_l.length+'='+(Kurvenliste_r.length-Kurvenliste_l.length)+';<br/>\n';
+  text=text+'x3x=['+x3x+'];<br/>\n';
   id2.innerHTML=id.innerHTML;
   id2.scrollTop = id2.scrollHeight;
   id.innerHTML=text;
@@ -1717,6 +1719,7 @@ function k115l() { Kurve('#k130r',180,30,1) }
 function zeichnex(d,A,C,g) {
   if (C[d]>0) {
     let q=A[C[d]][0]/g;//alert(q);
+    x3x[Math.round(d/3)]=q;
 //    if (q!=Math.round(q)) alert (q);
 //    for (let i=0;i<q;i++) { k115l(); k115r()} //if (i%2) k130l(); else k130r()
     if (q>0.01) if (q%2!=0) {
@@ -1739,6 +1742,7 @@ function Schliessen() {
   let A=Ausgangsmatrix;
   let g=gemeinsamer_Nenner;
   let C=[];
+  x3x=[];
   for (let i=0;i<D.length;i++) C[i]=-1;
   for (let i=0;i<B.length;i++) if (B[i]>0) C[B[i]]=i;
 //alert(C);
@@ -1794,13 +1798,13 @@ k130l();
 */
 g188();
 g172();
-k130l();
-k130l();
-k130r();
+/*k130l();
 k130l();
 k130r();
+k130l();
 k130r();
-let zm=7;
+k130r();*/
+let zm=0;
 let all=[3,6,9,12,15,18,21,24,27,30,33,36];
 //0,2=
 //0:0,0,0,-2; 1:2,0,0,0; 2:0,0,0,0; 3:1,-1,0,0; 
@@ -1810,7 +1814,8 @@ redInd=([[18],[15,18],all,[15,18],[12,18],all,[15,18],[3,6,],all,[3,6],[18],all]
 //0:[18]; 1:[15,18]; 2:[18]; 3:[15,18];
 //4:[12,18]; 5:[18]; 6:[15,18]; 7:[3,6];
 //8:[3]; 9:[3,6]; 10:[18]; 11:[18];
-redInd=[15,18];
+redInd=[3,6,9,15,18,21,27,30,33];
+
 //redInd=all;
 for (let z=0;z<zm;z++) k130l();
 k130l();k130r();//k130l();k130r();
