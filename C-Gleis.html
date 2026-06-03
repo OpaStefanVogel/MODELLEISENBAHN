@@ -127,6 +127,8 @@ function Logvar(id,id2) {
   text=text+'Kurvenliste_r=['+Kurvenliste_l.sort()+'];<br/>\n';
   text=text+'Kurvenliste_l=['+Kurvenliste_r.sort()+'];<br/>\n';
   text=text+'Kurvenliste_r.length-Kurvenliste_l.length='+Kurvenliste_r.length+'-'+Kurvenliste_l.length+'='+(Kurvenliste_r.length-Kurvenliste_l.length)+';<br/>\n';
+  text=text+'Schienen.length='+Schienen.length+';<br/>\n';
+  text=text+'Restschienen.length='+Restschienen.length+';<br/>\n';
   text=text+'x3x=['+x3x+'];<br/>\n';
   id2.innerHTML=id.innerHTML;
   id2.scrollTop = id2.scrollHeight;
@@ -1555,8 +1557,10 @@ function suche_Pivot() {
   var v=0;
   var ri=0;
   var sj=0;
+  //alert([1,r,s,ri,sj,v]);
   for (var i=1;i<m;i++) if (Ausgangsmatrix[i][0]<0&&alt(B[i])<r) {r=alt(B[i]); ri=i; v=1}
   for (var j=1;j<n;j++) if (Ausgangsmatrix[0][j]>0&&alt(D[j])<s) {s=alt(D[j]); sj=j; v=2}
+  //alert([2,r,s,ri,sj,v]);
   if (r<s) {
     s=m+n-1; sj=0;
     for (var j=1;j<n;j++) if (Ausgangsmatrix[ri][j]>0&&alt(D[j])<s) {s=alt(D[j]); sj=j; v=3}
@@ -1565,7 +1569,7 @@ function suche_Pivot() {
       for (var i=1;i<m;i++) if (Ausgangsmatrix[i][sj]<0&&alt(B[i])<r) {r=alt(B[i]); ri=i; v=4}  
       }
   //alert("suche_Pivot()\n\n[ ["+Ausgangsmatrix.join("],\n  [")+"] ] / "+gemeinsamer_Nenner+"\n\nr="+r+"; s="+s+"; ri="+ri+"; sj="+sj+";\n");
-  //alert([r,s,ri,sj]);
+  //alert([3,r,s,ri,sj,v]);
   return [r,s,ri,sj,v];
   }
 
@@ -1655,7 +1659,11 @@ function fuelle_Ausgangsmatrix(ausblenden) {
 //Ausgangsmatrix zu Aufgabe6:
 
 Ausgangsmatrix=[
-/* z*/ [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ //[  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ //[  0,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ //[  0, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ //[  0,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ [  0, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 
 //       x0, x1, x2, x3, x4, x5, x6, x7, x8  x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56  
 //horiz.  b,  0,  0, 15, 30, 30, 45, 60, 60, 75, 90, 90,105,120,120,135,150,150,165,180,180,195,210,210,225,240,240,255,270,270,285,300,300,315,330,330,345,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W],
@@ -1814,7 +1822,9 @@ redInd=([[18],[15,18],all,[15,18],[12,18],all,[15,18],[3,6,],all,[3,6],[18],all]
 //0:[18]; 1:[15,18]; 2:[18]; 3:[15,18];
 //4:[12,18]; 5:[18]; 6:[15,18]; 7:[3,6];
 //8:[3]; 9:[3,6]; 10:[18]; 11:[18];
-redInd=[3,6,9,15,18,21,27,30,33];
+//redInd=[3,6,9,15,18,21,27,30,33];
+//redInd=[3,6,9,12,15,18,21,24,27];
+redInd=[];
 
 //redInd=all;
 for (let z=0;z<zm;z++) k130l();
@@ -1837,4 +1847,5 @@ ok L1 L2 ans Ende scrollen
 .. Zwischenlok
 .. Lösung3_1 und 3_2 zusammenziehen
 .. Teillösung4 komprimieren
+.. Versuch 180 Grad Drehung als Anfangslösung nehmen
   -->
