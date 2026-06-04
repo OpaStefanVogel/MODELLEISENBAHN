@@ -2,8 +2,8 @@
 <head>
   <title>C-Gleis</title>
   <meta charset="utf-8"/>
-  <style type="text/css"> 
-    </style> 
+  <style type="text/css">
+    </style>
 
 <!-- <EISENB><HILLI>ok hab d=(Math.sqrt(7)-2)/3*R</HILLI></EISENB> -->
 <body>
@@ -13,13 +13,13 @@
   </div>
 
 <div style='display:flex'>
-  <button style='font-size:300%' onclick='Gerade("#g188",m188);Schienenplot();'>24188</button>
-  <button style='font-size:300%' onclick='Gerade("#g172",m172);Schienenplot();'>24172</button>
-  <button style='font-size:300%' onclick='Kurve("#k130r",R,30,r);Schienenplot();'>24130r</button>
-  <button style='font-size:300%' onclick='Kurve("#k130l",R,30,l);Schienenplot();'>24130&ell;</button>
+  <button id='id_g188' style='font-size:300%'>24188</button>
+  <button id='id_g172' style='font-size:300%'>24172</button>
+  <button id='id_k130r' style='font-size:300%'>24130r</button>
+  <button id='id_k130l' style='font-size:300%'>24130&ell;</button>
 &nbsp;
-  <button style='font-size:300%' onclick='Spop();Schienenplot();'>pop()</button>
-  <button style='font-size:300%' onclick='Schliessen();Schienenplot();'>Schließen</button>
+  <button id='id_pop' style='font-size:300%'>pop()</button>
+  <button id='id_Schliessen' style='font-size:300%'>Schließen</button>
   </div>
 
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
@@ -119,10 +119,10 @@ starte_Pivotverfahren();
 //Zusatz(1,1);
 */
 </textarea>
-<button onclick="Los()">losrechnen</button>
-<button onclick="t(p[2],p[3])">weiter</button>
-<button id='weiter100' onclick="for (var w=0;w<100;w++) if (p[2]>0 & p[3]>0) t(p[2],p[3])">100*weiter</button>
-<button onclick="p=hist.pop(); t(p[0],p[1]); hist.pop()">zurueck</button>
+<button id='id_Los' onclick="Los()">losrechnen</button>
+<button id='id_weiter' onclick="t(p[2],p[3])">weiter</button>
+<button id='id_weiter100' onclick="for (let w=0;w<100;w++) if (p[2]>0 & p[3]>0) t(p[2],p[3])">100*weiter</button>
+<button id='id_zurueck' onclick="p=hist.pop(); t(p[0],p[1]); hist.pop()">zurueck</button>
 
 <div id="HCode" style='overflow:auto'> </div>
 <div id="Logfile" style="white-space:pre; font-family:Courier,Monospace; font-size:70%">
@@ -138,7 +138,19 @@ starte_Pivotverfahren();
   </style>
 
 
-<script>
+<script type='module'>
+id_g188.addEventListener("click",function() {Gerade("#g188",m188);Schienenplot()});
+id_g172.addEventListener("click",function() {Gerade("#g172",m172);Schienenplot()});
+id_k130r.addEventListener("click",function() {Kurve("#k130r",R,30,r);Schienenplot()});
+id_k130l.addEventListener("click",function() {Kurve("#k130l",R,30,l);Schienenplot()});
+id_pop.addEventListener("click",function() {Spop();Schienenplot()});
+id_Schliessen.addEventListener("click",function() {Schliessen();Schienenplot()});
+
+id_Los.addEventListener("click",function() {Los()});
+id_weiter.addEventListener("click",function() {t(p[2],p[3])});
+id_weiter100.addEventListener("click",function() {for (let w=0;w<100;w++) if (p[2]>0 & p[3]>0) t(p[2],p[3])});
+id_zurueck.addEventListener("click",function() {p=hist.pop(); t(p[0],p[1]); hist.pop()});
+
 let R=360;
 let d=(Math.sqrt(7)-2)/3*R;
 let m077=d;         //=0*R/3+3*d/3=25.830052442583632
@@ -1487,16 +1499,16 @@ k130r();
 //Schienenplot();
 
 
-var Ausgangsmarix=[];
-var gemeinsamer_Nenner=1;
-var m=0;
-var n=0;
-var D=[];
-var B=[];
-var LCode="";
-var HCode="";
-var p=[];
-var hist=[];
+let Ausgangsmatrix=[];
+let gemeinsamer_Nenner=1;
+let m=0;
+let n=0;
+let D=[];
+let B=[];
+let LCode="";
+let HCode="";
+let p=[];
+let hist=[];
 
 function Los() {
   //alert(document.getElementById("input").value);
@@ -1504,8 +1516,8 @@ function Los() {
   m=Ausgangsmatrix.length;
   n=Ausgangsmatrix[0].length;
   LCode="m="+m+"\nn="+n+";\n";
-  D=[]; for (var j=0;j<n;j++) D[j]=j;
-  B=[]; for (var i=0;i<m;i++) B[i]=-1-i;
+  D=[]; for (let j=0;j<n;j++) D[j]=j;
+  B=[]; for (let i=0;i<m;i++) B[i]=-1-i;
   hist=[];
   p=suche_Pivot();
   Ausgabe();
@@ -1516,11 +1528,11 @@ function tausche(r,s) {
   m=Ausgangsmatrix.length;
   n=Ausgangsmatrix[0].length;
   //alert(m+" "+n);
-  var neueMatrix=[];
-  var neuerNenner=Ausgangsmatrix[r][s];
-  for (var i=0;i<m;i++) {
+  let neueMatrix=[];
+  let neuerNenner=Ausgangsmatrix[r][s];
+  for (let i=0;i<m;i++) {
     neueMatrix[i]=[];
-    for (var j=0;j<n;j++) {
+    for (let j=0;j<n;j++) {
       if (i==r&&j==s) neueMatrix[i][j]=Math.round(gemeinsamer_Nenner);
       if (i!=r&&j==s) neueMatrix[i][j]=Math.round(Ausgangsmatrix[i][j]);
       if (i==r&&j!=s) neueMatrix[i][j]=Math.round(-Ausgangsmatrix[i][j]);
@@ -1528,7 +1540,7 @@ function tausche(r,s) {
       }
     }
   if (neuerNenner<0) {
-    for (var i=0;i<m;i++) for (var j=0;j<n;j++) neueMatrix[i][j]=-neueMatrix[i][j];
+    for (let i=0;i<m;i++) for (let j=0;j<n;j++) neueMatrix[i][j]=-neueMatrix[i][j];
     neuerNenner=-neuerNenner;
     }
   Ausgangsmatrix=neueMatrix;
@@ -1539,7 +1551,7 @@ function tausche(r,s) {
 function t(r,s) {
   hist.push([r,s]);
   p=[r,s,r,s];
-  var merk=B[p[2]];
+  let merk=B[p[2]];
   B[p[2]]=D[p[3]];
   D[p[3]]=merk;
   tausche(p[2],p[3]);
@@ -1560,21 +1572,21 @@ function neu(bi) { if (bi<n) return bi; else return n-bi-2; }
 function xy(bi) { if (bi<n) return "x"+bi; else if (bi<n+m-1) return "y"+(bi-n+1); else return 0;}
 
 function suche_Pivot() {
-  var r=m+n-1; 
-  var s=r;
-  var v=0;
-  var ri=0;
-  var sj=0;
+  let r=m+n-1; 
+  let s=r;
+  let v=0;
+  let ri=0;
+  let sj=0;
   //alert([1,r,s,ri,sj,v]);
-  for (var i=1;i<m;i++) if (Ausgangsmatrix[i][0]<0&&alt(B[i])<r) {r=alt(B[i]); ri=i; v=1}
-  for (var j=1;j<n;j++) if (Ausgangsmatrix[0][j]>0&&alt(D[j])<s) {s=alt(D[j]); sj=j; v=2}
+  for (let i=1;i<m;i++) if (Ausgangsmatrix[i][0]<0&&alt(B[i])<r) {r=alt(B[i]); ri=i; v=1}
+  for (let j=1;j<n;j++) if (Ausgangsmatrix[0][j]>0&&alt(D[j])<s) {s=alt(D[j]); sj=j; v=2}
   //alert([2,r,s,ri,sj,v]);
   if (r<s) {
     s=m+n-1; sj=0;
-    for (var j=1;j<n;j++) if (Ausgangsmatrix[ri][j]>0&&alt(D[j])<s) {s=alt(D[j]); sj=j; v=3}
+    for (let j=1;j<n;j++) if (Ausgangsmatrix[ri][j]>0&&alt(D[j])<s) {s=alt(D[j]); sj=j; v=3}
     } else {
       r=m+n-1; ri=0;
-      for (var i=1;i<m;i++) if (Ausgangsmatrix[i][sj]<0&&alt(B[i])<r) {r=alt(B[i]); ri=i; v=4}  
+      for (let i=1;i<m;i++) if (Ausgangsmatrix[i][sj]<0&&alt(B[i])<r) {r=alt(B[i]); ri=i; v=4}  
       }
   //alert("suche_Pivot()\n\n[ ["+Ausgangsmatrix.join("],\n  [")+"] ] / "+gemeinsamer_Nenner+"\n\nr="+r+"; s="+s+"; ri="+ri+"; sj="+sj+";\n");
   //alert([3,r,s,ri,sj,v]);
@@ -1584,13 +1596,13 @@ function suche_Pivot() {
 function starte_Pivotverfahren() {
   m=Ausgangsmatrix.length;
   n=Ausgangsmatrix[0].length;
-  D=[0]; for (var j=1;j<n;j++) D[j]=j;
-  B=[0]; for (var i=1;i<m;i++) B[i]=n+i-1;
+  D=[0]; for (let j=1;j<n;j++) D[j]=j;
+  B=[0]; for (let i=1;i<m;i++) B[i]=n+i-1;
   p=suche_Pivot();
   LCode="Ausgangsmatrix und Ergebnis der ersten Pivotsuche:\n\n[ ["+Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
   HCode="<p>Ausgangsmatrix und Ergebnis der ersten Pivotsuche:<p>"+Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
   while (p[2]>0&&p[3]>0) {
-    var merk=B[p[2]];
+    let merk=B[p[2]];
     B[p[2]]=D[p[3]];
     D[p[3]]=merk;
     //alert("B=["+B+"]; D=["+D+"];");
@@ -1608,7 +1620,7 @@ function starte_Pivotverfahren() {
   }
 
 function Zusatz(i,j) {
-  var merk=B[i];
+  let merk=B[i];
   B[i]=D[j];
   D[j]=merk;
   tausche(i,j);
@@ -1621,27 +1633,27 @@ function Zusatz(i,j) {
   }
 
 function Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p) {
-  var T=Ausgangsmatrix.join("],\n  [")+"] ] / "
+  let T=Ausgangsmatrix.join("],\n  [")+"] ] / "
     +gemeinsamer_Nenner+"\n\nB=["+B+"]; D=["+D+"];"
     +"\n\nr="+p[0]+"; s="+p[1]+"; ri="+p[2]+"; sj="+p[3]+";\n";
   return T;
   }
 
 function Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p) {
-  var T='<table style="font-style:italic;font-size:「」80%" border="1">\n';
-  var Nenner=gemeinsamer_Nenner;
+  let T='<table style="font-style:italic;font-size:「」80%" border="1">\n';
+  let Nenner=gemeinsamer_Nenner;
 //  if (p[2]>0&&p[3]>0) Nenner=1;
   T=T+"<tr>"+"<td>"+Nenner+"</td>";
-  for (var j=0;j<n;j++) {
+  for (let j=0;j<n;j++) {
       T=T+"<td>";
       if (D[j]>=0) T=T+"x<sub>"+D[j]+"</sub></td>"; 
         else T=T+"y<sub>"+(-1-D[j])+"</sub></td>";
       }
-  for (var i=0;i<m;i++) {
+  for (let i=0;i<m;i++) {
     T=T+"<tr>";
     if (B[i]<0) T=T+"<td>y<sub>"+(-1-B[i])+"</sub></td>"; 
       else T=T+"<td>x<sub>"+(B[i])+"</sub></td>";
-    for (var j=0;j<n;j++) {
+    for (let j=0;j<n;j++) {
       if (i==p[2]&&j==p[3]) T=T+'<td style="color:blue; border:solid"';
         else T=T+"<td";
       if (j>0&Ausgangsmatrix[i][0]<0&Ausgangsmatrix[i][j]>0) T=T+' class="zulaessig"';
@@ -1666,8 +1678,6 @@ function Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p) {
 
 
 function fuelle_Ausgangsmatrix(ausblenden) {
-//Ausgangsmatrix zu Aufgabe6:
-
 Ausgangsmatrix=[
 /* z*/ //[  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 /* z*/ //[  0,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
@@ -1717,7 +1727,7 @@ Ausgangsmatrix=[
 /*14*/ [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 /* 8*/ [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 /* 8*/ [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
-  ] ;
+  ];
 gemeinsamer_Nenner=1;
 
   //alert(S.dmlx);
@@ -1756,7 +1766,7 @@ function pruefe_C(g) {
   return true;
   }
 
-function Schliessen() {
+function Schliessen() {alert('Schließen startet nach "OK" drücken und dauert einen Momemt');
   redInd=[];
   let A=[];
   let g=1;
@@ -1764,7 +1774,7 @@ function Schliessen() {
   do {
     fuelle_Ausgangsmatrix(redInd);
     Los();//startet Plus4.html
-    weiter100.click();
+    id_weiter100.click();
     A=Ausgangsmatrix;
     g=gemeinsamer_Nenner;
     C=[];
