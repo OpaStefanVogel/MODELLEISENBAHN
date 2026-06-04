@@ -13,11 +13,13 @@
   </div>
 
 <div style='display:flex'>
-  <button style='font-size:300%' onclick='Gerade("#g188",m188);Schliessen();Schienenplot();'>24188</button>
-  <button style='font-size:300%' onclick='Gerade("#g172",m172);Schliessen();Schienenplot();'>24172</button>
-  <button style='font-size:300%' onclick='Kurve("#k130r",R,30,r);Schliessen();Schienenplot();'>24130r</button>
-  <button style='font-size:300%' onclick='Kurve("#k130l",R,30,l);Schliessen();Schienenplot();'>24130&ell;</button>
-  <button style='font-size:300%' onclick='Spop();Schliessen();Schienenplot();'>pop()</button>
+  <button style='font-size:300%' onclick='Gerade("#g188",m188);Schienenplot();'>24188</button>
+  <button style='font-size:300%' onclick='Gerade("#g172",m172);Schienenplot();'>24172</button>
+  <button style='font-size:300%' onclick='Kurve("#k130r",R,30,r);Schienenplot();'>24130r</button>
+  <button style='font-size:300%' onclick='Kurve("#k130l",R,30,l);Schienenplot();'>24130&ell;</button>
+&nbsp;
+  <button style='font-size:300%' onclick='Spop();Schienenplot();'>pop()</button>
+  <button style='font-size:300%' onclick='Schliessen();Schienenplot();'>Schließen</button>
   </div>
 
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
@@ -59,6 +61,82 @@
 
 <div id='L4' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto; height:40px'>Logfile4</div>
 <div id='L3' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto; height:40px'>Logfile3</div>
+
+
+
+
+<div>Input <i>(javascript, "." als Dezimaltrenner)</i>:</div>
+<textarea id="input" cols="40" rows="10" >Ausgangsmatrix=[ 
+  [  1,  0,  0, -1,  0,  0, -2,  0 ],
+  [  0,  1, -1,  0,  0,  0,  1,  0 ],
+  [  0,  0,  0,  0,  1, -1,  1,  0 ],
+  [  0,  0,  0,  0,  1,  1,  0, -2 ],
+  [  0,  1,  1,  0,  0,  0,  0,  1 ],
+  [  1,  0,  0,  1,  0,  0,  0,  1 ] 
+  ];
+
+//zu Aufgabe5:
+Ausgangsmatrix=[
+//          k   Y  X g19 g17
+  [     0,  0,  0, 0,  0, 0  ],
+  [     1,  0, -1, 2,  0, 0  ],
+  [    -1,  0,  1,-2,  0, 0  ],
+  [     0,  0,  0,-1,  1, 0  ],
+  [     0,  0,  0, 1, -1, 0  ],
+  [     0,  0,  0,-1,  0, 1  ],
+  [     0,  0,  0, 1,  0,-1  ],
+  [    -3,  0,  1, 0,  0, 0  ],
+  [     3,  0, -1, 0,  0, 0  ],
+  [     1, -1,  1, 0,  0, 0  ],
+  [    -1,  1, -1, 0,  0, 0  ],
+  ] ;
+  
+
+
+gemeinsamer_Nenner=1;
+
+/*
+tausche(0,0);
+alert(Ausgangsmatrix.join("\n"));
+tausche(1,1);
+alert(Ausgangsmatrix.join("\n"));
+tausche(0,0);
+alert(Ausgangsmatrix.join("\n"));
+tausche(1,1);
+alert(Ausgangsmatrix.join("\n"));
+//tausche(1,2);
+//tausche(2,2);
+
+
+//tausche(1,1);
+//tausche(2,2);
+//tausche(3,3);
+//tausche(4,1);
+//tausche(2,2);
+//tausche(4,2);
+
+starte_Pivotverfahren();
+//Zusatz(1,1);
+*/
+</textarea>
+<button onclick="Los()">losrechnen</button>
+<button onclick="t(p[2],p[3])">weiter</button>
+<button id='weiter100' onclick="for (var w=0;w<100;w++) if (p[2]>0 & p[3]>0) t(p[2],p[3])">100*weiter</button>
+<button onclick="p=hist.pop(); t(p[0],p[1]); hist.pop()">zurueck</button>
+
+<div id="HCode" style='overflow:auto'> </div>
+<div id="Logfile" style="white-space:pre; font-family:Courier,Monospace; font-size:70%">
+  <div>
+<div id="Ausgabe">
+  <div>
+
+
+<style>
+  td {text-align:right; min-width:10}
+  .zulaessig {background-color:pink}
+  .fortschritt {background-color:aqua}
+  </style>
+
 
 <script>
 let R=360;
@@ -1408,80 +1486,7 @@ k130r();
 //Schliessen(); 
 //Schienenplot();
 
-  </script>
-  
-<div>Input <i>(javascript, "." als Dezimaltrenner)</i>:</div>
-<textarea id="input" cols="40" rows="10" >Ausgangsmatrix=[ 
-  [  1,  0,  0, -1,  0,  0, -2,  0 ],
-  [  0,  1, -1,  0,  0,  0,  1,  0 ],
-  [  0,  0,  0,  0,  1, -1,  1,  0 ],
-  [  0,  0,  0,  0,  1,  1,  0, -2 ],
-  [  0,  1,  1,  0,  0,  0,  0,  1 ],
-  [  1,  0,  0,  1,  0,  0,  0,  1 ] 
-  ];
 
-//zu Aufgabe5:
-Ausgangsmatrix=[
-//          k   Y  X g19 g17
-  [     0,  0,  0, 0,  0, 0  ],
-  [     1,  0, -1, 2,  0, 0  ],
-  [    -1,  0,  1,-2,  0, 0  ],
-  [     0,  0,  0,-1,  1, 0  ],
-  [     0,  0,  0, 1, -1, 0  ],
-  [     0,  0,  0,-1,  0, 1  ],
-  [     0,  0,  0, 1,  0,-1  ],
-  [    -3,  0,  1, 0,  0, 0  ],
-  [     3,  0, -1, 0,  0, 0  ],
-  [     1, -1,  1, 0,  0, 0  ],
-  [    -1,  1, -1, 0,  0, 0  ],
-  ] ;
-  
-
-
-gemeinsamer_Nenner=1;
-
-/*
-tausche(0,0);
-alert(Ausgangsmatrix.join("\n"));
-tausche(1,1);
-alert(Ausgangsmatrix.join("\n"));
-tausche(0,0);
-alert(Ausgangsmatrix.join("\n"));
-tausche(1,1);
-alert(Ausgangsmatrix.join("\n"));
-//tausche(1,2);
-//tausche(2,2);
-
-
-//tausche(1,1);
-//tausche(2,2);
-//tausche(3,3);
-//tausche(4,1);
-//tausche(2,2);
-//tausche(4,2);
-
-starte_Pivotverfahren();
-//Zusatz(1,1);
-*/
-</textarea>
-<button onclick="Los()">losrechnen</button>
-<button onclick="t(p[2],p[3])">weiter</button>
-<button id='weiter100' onclick="for (var w=0;w<100;w++) if (p[2]>0 & p[3]>0) t(p[2],p[3])">100*weiter</button>
-<button onclick="p=hist.pop(); t(p[0],p[1]); hist.pop()">zurueck</button>
-
-<div id="HCode" style='overflow:auto'> </div>
-<div id="Logfile" style="white-space:pre; font-family:Courier,Monospace; font-size:70%">
-  <div>
-<div id="Ausgabe">
-  <div>
-
-
-<style>
-  td {text-align:right; min-width:10}
-  .zulaessig {background-color:pink}
-  .fortschritt {background-color:aqua}
-  </style>
-<script>
 var Ausgangsmarix=[];
 var gemeinsamer_Nenner=1;
 var m=0;
@@ -1655,9 +1660,11 @@ function Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p) {
   return T;
   }
 
-  </script>
-  
-<script>
+
+
+
+
+
 function fuelle_Ausgangsmatrix(ausblenden) {
 //Ausgangsmatrix zu Aufgabe6:
 
@@ -1723,9 +1730,6 @@ gemeinsamer_Nenner=1;
     }
   for (let i=0;i<Ausgangsmatrix.length;i++) for (let j=0;j<ausblenden.length;j++) Ausgangsmatrix[i][ausblenden[j]]=0;
   }
-  </script>
-
-<script>
 
 function k115r() { Kurve('#k130l',180,30,-1) }
 function k115l() { Kurve('#k130r',180,30,1) }
@@ -1869,7 +1873,7 @@ k130l();k130r();//k130l();k130r();
 for (let z=0;z<zm;z++) k130r();
 */
 
-Schliessen(); 
+//Schliessen(); 
 Schienenplot();
 
   </script>
