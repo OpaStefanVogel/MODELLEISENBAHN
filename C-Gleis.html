@@ -95,6 +95,8 @@ let Distanzmerkliste=[
 let Kurvenliste_l=[];
 let Kurvenliste_r=[];
 let x3x=[];
+let redInd=[];
+let C=[];
 
 Logvar(L1,L1);
 
@@ -129,6 +131,7 @@ function Logvar(id,id2) {
   text=text+'Kurvenliste_r.length-Kurvenliste_l.length='+Kurvenliste_r.length+'-'+Kurvenliste_l.length+'='+(Kurvenliste_r.length-Kurvenliste_l.length)+';<br/>\n';
   text=text+'Schienen.length='+Schienen.length+';<br/>\n';
   text=text+'Restschienen.length='+Restschienen.length+';<br/>\n';
+  text=text+'redInd=['+redInd+'];<br/>\n';
   text=text+'x3x=['+x3x+'];<br/>\n';
   id2.innerHTML=id.innerHTML;
   id2.scrollTop = id2.scrollHeight;
@@ -1663,8 +1666,9 @@ Ausgangsmatrix=[
 /* z*/ //[  0,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 /* z*/ //[  0, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 /* z*/ //[  0,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
-/* z*/ [  0, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
-
+/* z*/ //[  0, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ [  0, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+ 
 //       x0, x1, x2, x3, x4, x5, x6, x7, x8  x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56  
 //horiz.  b,  0,  0, 15, 30, 30, 45, 60, 60, 75, 90, 90,105,120,120,135,150,150,165,180,180,195,210,210,225,240,240,255,270,270,285,300,300,315,330,330,345,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W],
 /*18*/ [  1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, -2,  2, -1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
@@ -1738,19 +1742,37 @@ function zeichnex(d,A,C,g) {
     }
   }
 
-let redInd=[];
+function pruefe_C(g) {
+  let i0=-1;
+  for (let d=0;d<37;d=d+3) {
+    if ((i0<0) && (C[d]>0) && ((Ausgangsmatrix[C[d]][0]/g)%2!=0)) i0=d;
+    }
+  if (i0==-1) return false; 
+  redInd.push(i0); 
+  return true;
+  }
+
 function Schliessen() {
-  fuelle_Ausgangsmatrix(redInd); 
-  Los();//startet Plus4.html
-  weiter100.click(); //
+  redInd=[];
+  let A=[];
+  let g=1;
+  C=[];
+  do {
+    fuelle_Ausgangsmatrix(redInd);
+    Los();//startet Plus4.html
+    weiter100.click();
+    A=Ausgangsmatrix;
+    g=gemeinsamer_Nenner;
+    C=[];
+    x3x=[];
+    for (let i=0;i<D.length;i++) C[i]=-1;
+    for (let i=0;i<B.length;i++) if (B[i]>0) C[B[i]]=i;
+    } while (pruefe_C(g));
   let Schiene0=structuredClone(Schienen[0]);
   let S2=structuredClone(S);
   Restschienen=Schienen;
   Schienen=[];
   
-  let A=Ausgangsmatrix;
-  let g=gemeinsamer_Nenner;
-  let C=[];
   x3x=[];
   for (let i=0;i<D.length;i++) C[i]=-1;
   for (let i=0;i<B.length;i++) if (B[i]>0) C[B[i]]=i;
@@ -1806,9 +1828,17 @@ k130l();
 k130l();
 */
 g188();
-g188();
-g188();
-g188();
+k130l();
+k130l();
+k130l();
+k130l();
+k130r();
+k130r();
+k130r();
+k130r();
+//redInd=[9,15];
+
+
 //g172();
 
 /*k130l();
