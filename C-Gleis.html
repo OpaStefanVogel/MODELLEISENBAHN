@@ -1127,17 +1127,17 @@ function Erzeuge_Worker(scripttext) {alert(scripttext);
     Errormessage="<b>ERROR: "+e.message+'</b> <a href="#Fehlerausgabe2">in line '+e.lineno+" at col "+e.colno+"</a>";
     document.getElementById("Disp_Worker").firstElementChild.innerHTML=Errormessage;alert(Errormessage);
     Workermessage=Workermessage+"\n<b>ERROR: "+e.message+"</b> in line "+e.lineno+" at col "+e.colno+":\n"+e.stack+"\n";
-    let Textstelle_davor=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno);alert(Textstelle_davor);
+    let Textstelle_davor=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno-1);alert(Textstelle_davor);
     let Textstelle=Textstelle_davor+e.colno;alert(Textstelle);
-    let Textstelle_danach=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno+1);alert(Textstelle_danach);
+    let Textstelle_danach=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno);alert(Textstelle_danach);
     if (Textstelle_danach-Textstelle>100) Textstelle_danach=Textstelle+100;
     if (e.colno>100) Textstelle_davor=Textstelle-100;
-    Workermessage=Workermessage+scripttext.slice(Textstelle_davor,Textstelle).replace(/</g,"&lt;")+'<a id="Fehlerausgabe1" href="#Fehlerausgabe2" style="background-color:gray">'+scripttext.slice(Textstelle,Textstelle_danach).replace(/</g,"&lt;")+"</a>";
+    Workermessage=Workermessage+scripttext.slice(Textstelle_davor,Textstelle).replace(/</g,"&lt;")+'<a id="Fehlerausgabe1" href="#Fehlerausgabe2" style="background-color:aqua">'+scripttext.slice(Textstelle,Textstelle_danach).replace(/</g,"&lt;")+"</a>";
 alert(Workermessage);
     document.getElementById("Worker_message").innerHTML=Workermessage;
     let filetext="";
     //fetch(e.filename).then(x => x.text()).then(y => document.getElementById("Worker_scripttext").innerHTML=y.replace(/</g,"&lt;"));
-    document.getElementById("Worker_scripttext").innerHTML=scripttext.slice(0,Textstelle).replace(/</g,"&lt;")+'<a id="Fehlerausgabe2" href="#Fehlerausgabe1" style="background-color:gray">'+scripttext.slice(Textstelle,Textstelle_danach).replace(/</g,"&lt;")+"</a>"+scripttext.slice(Textstelle_danach).replace(/</g,"&lt;");
+    document.getElementById("Worker_scripttext").innerHTML=scripttext.slice(0,Textstelle).replace(/</g,"&lt;")+'<a id="Fehlerausgabe2" href="#Fehlerausgabe1" style="background-color:aqua">'+scripttext.slice(Textstelle,Textstelle_danach).replace(/</g,"&lt;")+"</a>"+scripttext.slice(Textstelle_danach).replace(/</g,"&lt;");
 //    selectText("Worker_scripttext");
     }
 
