@@ -59,6 +59,10 @@
     </g>
   </svg></div></div>
 
+<hr/>
+Worker_message=
+<div id="Worker_message" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
+Worker_message  </div>
 <div id='L4' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto; height:40px'>Logfile4</div>
 <div id='L3' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto; height:40px'>Logfile3</div>
 
@@ -130,10 +134,6 @@ starte_Pivotverfahren();
 <div id="Ausgabe">
   <div>
 
-<hr/>
-Worker_message=
-<div id="Worker_message" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
-Worker_message  </div>
 <hr/>
 Worker_scripttext=
 <div id="Worker_scripttext" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:110%; color:black;">
@@ -898,8 +898,8 @@ function t(r,s) {
 function Ausgabe() {
   LCode="D=["+D+"];<br/>B=["+B+"];<br/>p=["+[neu(p[0]),neu(p[1]),p[2],p[3],p[4]]+"];<br/>-------<br/>"+LCode;
   HCode=Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
-  document.getElementById("Logfile").firstChild.nodeValue=LCode;
-  document.getElementById("HCode").innerHTML=HCode;  
+  ///document.getElementById("Logfile").firstChild.nodeValue=LCode;
+  ///document.getElementById("HCode").innerHTML=HCode;  
   }
 
 function alt(bi) { if (bi<0) return n-bi-2; else return bi; }
@@ -1083,14 +1083,14 @@ gemeinsamer_Nenner=1;
 `+'S='+JSON.stringify(S)+';\nredInd=[]\n'
 +`
 
-postMessage("Hallo3 module");
+postMessage("Hallo4 module");
     fuelle_Ausgangsmatrix(redInd);
 postMessage("fuelle_Ausgangsmatrix(redInd) geschafft");
     Los();//startet Plus4.html
 postMessage("Los geschafft");
-    id_weiter100.click();
-postMessage("id_weiter100.click() geschafft");
-    id_weiter100.click();
+    for (let w=0;w<1000;w++) if (p[2]>0 & p[3]>0) t(p[2],p[3]);
+postMessage("id_weiter1000.click() geschafft");
+postMessage('Ausgangsmatrix='+Ausgangsmatrix);
 
 
 `;
@@ -1100,7 +1100,7 @@ Worker_scripttext.innerHTML=scripttext.replace(/</g,"&lt;");
 
 let Ausgabe_Worker_flag=[true];
 
-function Erzeuge_Worker(scripttext) {alert(scripttext);
+function Erzeuge_Worker(scripttext) {
   //let workerSource = document.querySelector("script#Workerscript");
   //let workerBlob = new Blob([workerSource.text], { type: "application/javascript" });
   let workerBlob = new Blob([scripttext], { type: "application/javascript" });
@@ -1111,7 +1111,7 @@ function Erzeuge_Worker(scripttext) {alert(scripttext);
 
   //const myWorker = new Worker('my_Worker.js');
   myWorker.onmessage = (event) => {
-    let SG=event.data;alert(SG);
+    let SG=event.data;
     if ((typeof SG)=="string") {
       if (Ausgabe_Worker_flag[0]) {
         Workermessage=Workermessage+"\nMessage: "+event.data;
@@ -1125,15 +1125,14 @@ function Erzeuge_Worker(scripttext) {alert(scripttext);
   myWorker.onerror = (e) => {
     alert('ERROR in Worker, siehe Fehlerausgabe unter "Ausgabe von Worker"\n'+e.message);
     Errormessage="<b>ERROR: "+e.message+'</b> <a href="#Fehlerausgabe2">in line '+e.lineno+" at col "+e.colno+"</a>";
-    document.getElementById("Disp_Worker").firstElementChild.innerHTML=Errormessage;alert(Errormessage);
+    document.getElementById("Disp_Worker").firstElementChild.innerHTML=Errormessage;
     Workermessage=Workermessage+"\n<b>ERROR: "+e.message+"</b> in line "+e.lineno+" at col "+e.colno+":\n"+e.stack+"\n";
-    let Textstelle_davor=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno-1);alert(Textstelle_davor);
-    let Textstelle=Textstelle_davor+e.colno;alert(Textstelle);
-    let Textstelle_danach=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno);alert(Textstelle_danach);
+    let Textstelle_davor=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno-1);
+    let Textstelle=Textstelle_davor+e.colno;
+    let Textstelle_danach=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno);
     if (Textstelle_danach-Textstelle>100) Textstelle_danach=Textstelle+100;
     if (e.colno>100) Textstelle_davor=Textstelle-100;
     Workermessage=Workermessage+scripttext.slice(Textstelle_davor,Textstelle).replace(/</g,"&lt;")+'<a id="Fehlerausgabe1" href="#Fehlerausgabe2" style="background-color:aqua">'+scripttext.slice(Textstelle,Textstelle_danach).replace(/</g,"&lt;")+"</a>";
-alert(Workermessage);
     document.getElementById("Worker_message").innerHTML=Workermessage;
     let filetext="";
     //fetch(e.filename).then(x => x.text()).then(y => document.getElementById("Worker_scripttext").innerHTML=y.replace(/</g,"&lt;"));
@@ -1146,7 +1145,6 @@ alert(Workermessage);
 //  myWorker.postMessage(jdoc);
   
   //Worker_Verzweigungen_bestimmen();
-  alert(myWorker);
 
   return myWorker;
   }
