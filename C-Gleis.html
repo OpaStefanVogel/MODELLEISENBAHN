@@ -130,6 +130,20 @@ starte_Pivotverfahren();
 <div id="Ausgabe">
   <div>
 
+<hr/>
+Worker_message=
+<div id="Worker_message" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
+Worker_message  </div>
+<hr/>
+Worker_scripttext=
+<div id="Worker_scripttext" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:110%; color:black;">
+Worker_scripttext  </div>
+<hr/>
+Disp_Worker=
+<span id="Disp_Worker">Disp_Worker<span>
+</body>
+  </html>
+
 
 <style>
   td {text-align:right; min-width:10}
@@ -794,7 +808,7 @@ for (let z=0;z<zm;z++) k130r();
 Schienenplot();
 
 
-
+//innerhalb scriptext kein \n verwenden weil das bereits von `...` ausgewertet wird!!!
 let scripttext=`
 if (self.toString()=="[object DedicatedWorkerGlobalScope]") {
   postMessage("self.navigator.hardwareConcurrency="
@@ -815,17 +829,278 @@ if (self.toString()=="[object DedicatedWorkerGlobalScope]") {
       j=j+1}
     //postMessage({function:"alert", argument:789})
     };
+  onerror = (e) => {postMessage('Fehlerausgabe von Worker onerror='+e)};
   postMessage('Hallo module');
   }
 
+let Ausgangsmatrix=[];
+let gemeinsamer_Nenner=1;
+let m=0;
+let n=0;
+let D=[];
+let B=[];
+let LCode="";
+let HCode="";
+let p=[];
+let hist=[];
+
+function Los() {
+  //alert(document.getElementById("input").value);
+  //eval(document.getElementById("input").value);
+  m=Ausgangsmatrix.length;
+  n=Ausgangsmatrix[0].length;
+
+  LCode="m="+m+"<br/>n="+n+";<br/>";
+  D=[]; for (let j=0;j<n;j++) D[j]=j;
+  B=[]; for (let i=0;i<m;i++) B[i]=-1-i;
+  hist=[];
+  p=suche_Pivot();
+  Ausgabe();
+  }
+
+function tausche(r,s) {
+  //alert("[ ["+Ausgangsmatrix.join("],<br/>  [")+"] ] / "+gemeinsamer_Nenner);  
+  m=Ausgangsmatrix.length;
+  n=Ausgangsmatrix[0].length;
+  //alert(m+" "+n);
+  let neueMatrix=[];
+  let neuerNenner=Ausgangsmatrix[r][s];
+  for (let i=0;i<m;i++) {
+    neueMatrix[i]=[];
+    for (let j=0;j<n;j++) {
+      if (i==r&&j==s) neueMatrix[i][j]=Math.round(gemeinsamer_Nenner);
+      if (i!=r&&j==s) neueMatrix[i][j]=Math.round(Ausgangsmatrix[i][j]);
+      if (i==r&&j!=s) neueMatrix[i][j]=Math.round(-Ausgangsmatrix[i][j]);
+      if (i!=r&&j!=s) neueMatrix[i][j]=Math.round((Ausgangsmatrix[i][j]*neuerNenner-Ausgangsmatrix[i][s]*Ausgangsmatrix[r][j])/gemeinsamer_Nenner);
+      }
+    }
+  if (neuerNenner<0) {
+    for (let i=0;i<m;i++) for (let j=0;j<n;j++) neueMatrix[i][j]=-neueMatrix[i][j];
+    neuerNenner=-neuerNenner;
+    }
+  Ausgangsmatrix=neueMatrix;
+  gemeinsamer_Nenner=neuerNenner;
+  //alert("r="+r+"; s="+s+";<br/><br/>[ ["+Ausgangsmatrix.join("],<br/>  [")+"] ] / "+gemeinsamer_Nenner);
+  }
+
+function t(r,s) {
+  hist.push([r,s]);
+  p=[r,s,r,s];
+  let merk=B[p[2]];
+  B[p[2]]=D[p[3]];
+  D[p[3]]=merk;
+  tausche(p[2],p[3]);
+  p=suche_Pivot();
+  //alert("p="+p+"<br/>r="+xy(p[0])+"; s="+xy(p[1])+";<br/><br/>[ ["+Ausgangsmatrix.join("],<br/>  [")+"] ] / "+gemeinsamer_Nenner);
+  Ausgabe();
+  }
+
+function Ausgabe() {
+  LCode="D=["+D+"];<br/>B=["+B+"];<br/>p=["+[neu(p[0]),neu(p[1]),p[2],p[3],p[4]]+"];<br/>-------<br/>"+LCode;
+  HCode=Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
+  document.getElementById("Logfile").firstChild.nodeValue=LCode;
+  document.getElementById("HCode").innerHTML=HCode;  
+  }
+
+function alt(bi) { if (bi<0) return n-bi-2; else return bi; }
+function neu(bi) { if (bi<n) return bi; else return n-bi-2; }
+function xy(bi) { if (bi<n) return "x"+bi; else if (bi<n+m-1) return "y"+(bi-n+1); else return 0;}
+
+function suche_Pivot() {
+  let r=m+n-1; 
+  let s=r;
+  let v=0;
+  let ri=0;
+  let sj=0;
+  //alert([1,r,s,ri,sj,v]);
+  for (let i=1;i<m;i++) if (Ausgangsmatrix[i][0]<0&&alt(B[i])<r) {r=alt(B[i]); ri=i; v=1}
+  for (let j=1;j<n;j++) if (Ausgangsmatrix[0][j]>0&&alt(D[j])<s) {s=alt(D[j]); sj=j; v=2}
+  //alert([2,r,s,ri,sj,v]);
+  if (r<s) {
+    s=m+n-1; sj=0;
+    for (let j=1;j<n;j++) if (Ausgangsmatrix[ri][j]>0&&alt(D[j])<s) {s=alt(D[j]); sj=j; v=3}
+    } else {
+      r=m+n-1; ri=0;
+      for (let i=1;i<m;i++) if (Ausgangsmatrix[i][sj]<0&&alt(B[i])<r) {r=alt(B[i]); ri=i; v=4}  
+      }
+  //alert("suche_Pivot()<br/><br/>[ ["+Ausgangsmatrix.join("],<br/>  [")+"] ] / "+gemeinsamer_Nenner+"<br/><br/>r="+r+"; s="+s+"; ri="+ri+"; sj="+sj+";<br/>");
+  //alert([3,r,s,ri,sj,v]);
+  return [r,s,ri,sj,v];
+  }
+
+function starte_Pivotverfahren() {
+  m=Ausgangsmatrix.length;
+  n=Ausgangsmatrix[0].length;
+  D=[0]; for (let j=1;j<n;j++) D[j]=j;
+  B=[0]; for (let i=1;i<m;i++) B[i]=n+i-1;
+  p=suche_Pivot();
+  LCode="Ausgangsmatrix und Ergebnis der ersten Pivotsuche:<br/><br/>[ ["+Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
+  HCode="<p>Ausgangsmatrix und Ergebnis der ersten Pivotsuche:<p>"+Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
+  while (p[2]>0&&p[3]>0) {
+    let merk=B[p[2]];
+    B[p[2]]=D[p[3]];
+    D[p[3]]=merk;
+    //alert("B=["+B+"]; D=["+D+"];");
+    tausche(p[2],p[3]);
+    p=suche_Pivot();
+    LCode=LCode+"<br/><br/>Zwischenergebnis und weitere Pivotsuche:<br/><br/>[ ["+Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
+    if (p[2]>0&&p[3]>0)
+      HCode=HCode+"<p>Zwischenergebnis und Ergebnis der nächsten Pivotsuche:<p>";
+      else HCode=HCode+"<p>letztes Ergebnis (kein Pivot mehr gefunden):<p>";
+    HCode=HCode+Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
+    }
+  LCode=LCode+"<br/><br/>Ergebnis:<br/><br/>[ ["+Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
+  document.getElementById("Logfile").firstChild.nodeValue=LCode;
+  document.getElementById("HCode").innerHTML=HCode;
+  }
+
+function Zusatz(i,j) {
+  let merk=B[i];
+  B[i]=D[j];
+  D[j]=merk;
+  tausche(i,j);
+  p=suche_Pivot();
+  LCode=LCode+"<br/><br/>Zusatzschritt:<br/><br/>[ ["+Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
+  HCode=HCode+"<p>Zusatzschritt:<p>";
+  HCode=HCode+Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
+  document.getElementById("Logfile").firstChild.nodeValue=LCode;
+  document.getElementById("HCode").innerHTML=HCode;
+  }
+
+function Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p) {
+  let T=Ausgangsmatrix.join("],<br/>  [")+"] ] / "
+    +gemeinsamer_Nenner+"<br/><br/>B=["+B+"]; D=["+D+"];"
+    +"<br/><br/>r="+p[0]+"; s="+p[1]+"; ri="+p[2]+"; sj="+p[3]+";<br/>";
+  return T;
+  }
+
+function Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p) {
+  let T='<table style="font-style:italic;font-size:「」80%" border="1"><br/>';
+  let Nenner=gemeinsamer_Nenner;
+//  if (p[2]>0&&p[3]>0) Nenner=1;
+  T=T+"<tr>"+"<td>"+Nenner+"</td>";
+  for (let j=0;j<n;j++) {
+      T=T+"<td>";
+      if (D[j]>=0) T=T+"x<sub>"+D[j]+"</sub></td>"; 
+        else T=T+"y<sub>"+(-1-D[j])+"</sub></td>";
+      }
+  for (let i=0;i<m;i++) {
+    T=T+"<tr>";
+    if (B[i]<0) T=T+"<td>y<sub>"+(-1-B[i])+"</sub></td>"; 
+      else T=T+"<td>x<sub>"+(B[i])+"</sub></td>";
+    for (let j=0;j<n;j++) {
+      if (i==p[2]&&j==p[3]) T=T+'<td style="color:blue; border:solid"';
+        else T=T+"<td";
+      if (j>0&Ausgangsmatrix[i][0]<0&Ausgangsmatrix[i][j]>0) T=T+' class="zulaessig"';
+      if (j>0&Ausgangsmatrix[0][j]>0&Ausgangsmatrix[i][j]<0) T=T+' class="fortschritt"';
+      T=T+' onclick="t('+i+","+j+')">';
+      if (Ausgangsmatrix[i][j]>=0) T=T+"+";
+      T=T+(Ausgangsmatrix[i][j])+"</td>";
+      }
+    T=T+"</tr>";
+    }
+//  T=T+Ausgangsmatrix.join("],<br/>  [")+"] ] / "
+//    +gemeinsamer_Nenner+"<br/><br/>B=["+B+"]; D=["+D+"];"
+//    +"<br/><br/>r="+p[0]+"; s="+p[1]+"; ri="+p[2]+"; sj="+p[3]+";<br/>";
+  T=T+"</table>";
+  //alert(T);
+  return T;
+  }
+
+  postMessage('Hallo2 module');
 
 
+
+
+
+function fuelle_Ausgangsmatrix(ausblenden) {
+Ausgangsmatrix=[
+/* z*/ //[  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ //[  0,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  2,  2,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ //[  0, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ //[  0,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ //[  0, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ [  0, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+ 
+//       x0, x1, x2, x3, x4, x5, x6, x7, x8  x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56  
+//horiz.  b,  0,  0, 15, 30, 30, 45, 60, 60, 75, 90, 90,105,120,120,135,150,150,165,180,180,195,210,210,225,240,240,255,270,270,285,300,300,315,330,330,345,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W],
+/*18*/ [  1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, -2,  2, -1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*18*/ [ -1,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  2, -2,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*19*/ [  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, -1,  0,  0,  0,  0, -1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*19*/ [  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  1,  0,  0,  0,  0,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*17*/ [  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, -1,  0,  0,  0,  0,  0,  0, -1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*17*/ [  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  1,  0,  0,  0,  0,  0,  0,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*13*/ [ -3,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*13*/ [  3,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0, -1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* 5*/ [  1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* 5*/ [ -1,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0, -1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*16*/ [  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*16*/ [  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* 9*/ [  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* 9*/ [  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*14*/ [  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*14*/ [  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* 8*/ [  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* 8*/ [  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+//                    *           *           *           *           *           *           *           *           *           *           *           *                                                                                 
+//       x0, x1, x2, x3, x4, x5, x6, x7, x8  x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56  
+//vert.   b,  0,  0, 15, 30, 30, 45, 60, 60, 75, 90, 90,105,120,120,135,150,150,165,180,180,195,210,210,225,240,240,255,270,270,285,300,300,315,330,330,345,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W],
+/*18*/ [  4,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2,  2, -1,  1,  0,  0,  0,  0,  0,  0],
+/*18*/ [ -4,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2, -2,  1, -1,  0,  0,  0,  0,  0,  0],
+/*19*/ [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, -1,  0,  0,  0,  0, -1,  1,  0,  0],
+/*19*/ [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  1,  0,  0,  0,  0,  1, -1,  0,  0],
+/*17*/ [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, -1,  0,  0,  0,  0,  0,  0, -1,  1],
+/*17*/ [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  1,  0,  0,  0,  0,  0,  0,  1, -1],
+/*13*/ [  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, -1,  0,  0,  0,  0,  0,  0],
+/*13*/ [  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  1,  0,  0,  0,  0,  0,  0],
+/* 5*/ [  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, -1,  0,  0,  0,  0,  0,  0],
+/* 5*/ [  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  1,  0,  0,  0,  0,  0,  0],
+/*16*/ [  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*16*/ [  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* 9*/ [  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2, -2,  0,  0],
+/* 9*/ [  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2,  2,  0,  0],
+/*14*/ [  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/*14*/ [  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* 8*/ [  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2, -2],
+/* 8*/ [  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -2,  2],
+  ];
+gemeinsamer_Nenner=1;
+
+  //alert(S.dmlx);
+  for (let i=0;i<37;i++) Ausgangsmatrix[i][0]=0;
+  for (let i=0;i<9;i++) {
+    Ausgangsmatrix[2*i+1][0]=S.dmlx[i+1];
+    Ausgangsmatrix[2*i+2][0]=-S.dmlx[i+1];
+    Ausgangsmatrix[18+2*i+1][0]=S.dmly[i+1];
+    Ausgangsmatrix[18+2*i+2][0]=-S.dmly[i+1];
+    }
+  for (let i=0;i<Ausgangsmatrix.length;i++) for (let j=0;j<ausblenden.length;j++) Ausgangsmatrix[i][ausblenden[j]]=0;
+  }
+
+
+  postMessage('Hallo3 module');
+
+`+'S='+JSON.stringify(S)+';\nredInd=[]\n'
++`
+
+postMessage("Hallo3 module");
+    fuelle_Ausgangsmatrix(redInd);
+postMessage("fuelle_Ausgangsmatrix(redInd) geschafft");
+    Los();//startet Plus4.html
+postMessage("Los geschafft");
+    id_weiter100.click();
+postMessage("id_weiter100.click() geschafft");
+    id_weiter100.click();
 
 
 `;
+
+Worker_scripttext.innerHTML=scripttext.replace(/</g,"&lt;");
+
+
 let Ausgabe_Worker_flag=[true];
 
-function Erzeuge_Worker(scripttext) {
+function Erzeuge_Worker(scripttext) {alert(scripttext);
   //let workerSource = document.querySelector("script#Workerscript");
   //let workerBlob = new Blob([workerSource.text], { type: "application/javascript" });
   let workerBlob = new Blob([scripttext], { type: "application/javascript" });
@@ -835,8 +1110,8 @@ function Erzeuge_Worker(scripttext) {
 
 
   //const myWorker = new Worker('my_Worker.js');
-  myWorker.onmessage = (event) => {alert(2);
-    let SG=event.data;
+  myWorker.onmessage = (event) => {
+    let SG=event.data;alert(SG);
     if ((typeof SG)=="string") {
       if (Ausgabe_Worker_flag[0]) {
         Workermessage=Workermessage+"\nMessage: "+event.data;
@@ -850,14 +1125,15 @@ function Erzeuge_Worker(scripttext) {
   myWorker.onerror = (e) => {
     alert('ERROR in Worker, siehe Fehlerausgabe unter "Ausgabe von Worker"\n'+e.message);
     Errormessage="<b>ERROR: "+e.message+'</b> <a href="#Fehlerausgabe2">in line '+e.lineno+" at col "+e.colno+"</a>";
-    document.getElementById("Disp_Worker").firstElementChild.innerHTML=Errormessage;
+    document.getElementById("Disp_Worker").firstElementChild.innerHTML=Errormessage;alert(Errormessage);
     Workermessage=Workermessage+"\n<b>ERROR: "+e.message+"</b> in line "+e.lineno+" at col "+e.colno+":\n"+e.stack+"\n";
-    let Textstelle_davor=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno);
-    let Textstelle=Textstelle_davor+e.colno;
-    let Textstelle_danach=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno+1);
+    let Textstelle_davor=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno);alert(Textstelle_davor);
+    let Textstelle=Textstelle_davor+e.colno;alert(Textstelle);
+    let Textstelle_danach=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno+1);alert(Textstelle_danach);
     if (Textstelle_danach-Textstelle>100) Textstelle_danach=Textstelle+100;
     if (e.colno>100) Textstelle_davor=Textstelle-100;
     Workermessage=Workermessage+scripttext.slice(Textstelle_davor,Textstelle).replace(/</g,"&lt;")+'<a id="Fehlerausgabe1" href="#Fehlerausgabe2" style="background-color:gray">'+scripttext.slice(Textstelle,Textstelle_danach).replace(/</g,"&lt;")+"</a>";
+alert(Workermessage);
     document.getElementById("Worker_message").innerHTML=Workermessage;
     let filetext="";
     //fetch(e.filename).then(x => x.text()).then(y => document.getElementById("Worker_scripttext").innerHTML=y.replace(/</g,"&lt;"));
@@ -875,22 +1151,15 @@ function Erzeuge_Worker(scripttext) {
   return myWorker;
   }
 
+function suche_Textstelle_ab_Zeilennummer(text,Zeilennummer) {
+  let Textstelle=0;
+  for (var i=1;i<Zeilennummer;i++) Textstelle=text.indexOf("\n",Textstelle+1);
+  return Textstelle;
+  }
+
 
   </script>
 
-<hr/>
-Disp_Worker=
-<span id="Disp_Worker">Disp_Worker<span>
-<hr/>
-Worker_message=
-<div id="Worker_message" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
-Worker_message  </div>
-<hr/>
-Worker_scripttext=
-<div id="Worker_scripttext" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:110%; color:black;">
-Worker_scripttext  </div>
-</body>
-  </html>
 
 <!--
 ok L1 L2 ans Ende scrollen
