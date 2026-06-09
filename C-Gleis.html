@@ -617,7 +617,7 @@ function Schliessen2() {
   let g=1;
   C=[];
   do {
-    Erzeuge_Worker();
+    Erzeuge_Worker(scripttext);
 //    alert(xyz);
     fuelle_Ausgangsmatrix(redInd);
     Los();//startet Plus4.html
@@ -813,12 +813,15 @@ if (self.toString()=="[object DedicatedWorkerGlobalScope]") {
     for (let i=0;i<0*1000000000;i++) {
       if (j%100000000==0) postMessage(j);
       j=j+1}
-    postMessage(`Hi, ${event.data}`);
     //postMessage({function:"alert", argument:789})
     };
-  onerror = (e) => {postMessage("Fehlerausgabe von Worker onerror=...\nonerror = "+e)} //aha, hier funktioniert e.lineno nicht, erst in myWorker.onerror
+  postMessage('Hallo module');
   }
-postMessage('Hallo module');
+
+
+
+
+
 `;
 let Ausgabe_Worker_flag=[true];
 
@@ -832,7 +835,7 @@ function Erzeuge_Worker(scripttext) {
 
 
   //const myWorker = new Worker('my_Worker.js');
-  myWorker.onmessage = (event) => {alert(1);
+  myWorker.onmessage = (event) => {alert(2);
     let SG=event.data;
     if ((typeof SG)=="string") {
       if (Ausgabe_Worker_flag[0]) {
@@ -876,11 +879,14 @@ function Erzeuge_Worker(scripttext) {
   </script>
 
 <hr/>
-<span id="Disp_Worker"> Disp_Worker<span>
+Disp_Worker=
+<span id="Disp_Worker">Disp_Worker<span>
 <hr/>
+Worker_message=
 <div id="Worker_message" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
 Worker_message  </div>
 <hr/>
+Worker_scripttext=
 <div id="Worker_scripttext" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:110%; color:black;">
 Worker_scripttext  </div>
 </body>
