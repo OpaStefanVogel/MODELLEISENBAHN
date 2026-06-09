@@ -152,7 +152,7 @@ Disp_Worker=
   </style>
 
 
-<script type='module'>
+<script>
 id_g188.addEventListener("click",function() {Gerade("#g188",m188);Schienenplot()});
 id_g172.addEventListener("click",function() {Gerade("#g172",m172);Schienenplot()});
 id_k130r.addEventListener("click",function() {Kurve("#k130r",R,30,r);Schienenplot()});
@@ -621,39 +621,22 @@ function pruefe_C(g) {
   }
 
 function Schliessen() {if (S.phi!=0) {alert('funktioniert momentan erst nur für Ausrichtung →'); return}
-  
-  setTimeout(function() {Schliessen2();Schienenplot()},100);
+  Erzeuge_Worker(scripttext);
   }
 
-function Schliessen2() {
+function Schliessen3([Ausgangsmatrix,gemeinsamer_Nenner,D,B]) {
   redInd=[];
-  let A=[];
-  let g=1;
+  let A=Ausgangsmatrix;
+  let g=gemeinsamer_Nenner;
   C=[];
-  do {
-    Erzeuge_Worker(scripttext);
-//    alert(xyz);
-    fuelle_Ausgangsmatrix(redInd);
-    Los();//startet Plus4.html
-    id_weiter100.click();
-    id_weiter100.click();
-    A=Ausgangsmatrix;
-    g=gemeinsamer_Nenner;
-    C=[];
-    x3x=[];
-    for (let i=0;i<D.length;i++) C[i]=-1;
-    for (let i=0;i<B.length;i++) if (B[i]>0) C[B[i]]=i;
-    } while (pruefe_C(g));
+  x3x=[];
+  for (let i=0;i<D.length;i++) C[i]=-1;
+  for (let i=0;i<B.length;i++) if (B[i]>0) C[B[i]]=i;
   let Schiene0=structuredClone(Schienen[0]);
   let S2=structuredClone(S);
   Restschienen=Schienen;
   Schienen=[];
   
-  x3x=[];
-  for (let i=0;i<D.length;i++) C[i]=-1;
-  for (let i=0;i<B.length;i++) if (B[i]>0) C[B[i]]=i;
-  //alert(C);
-
   for (let i=0;i<36;i=i+3) {
     if (C[i+1]>0) for (let j=0;j<A[C[i+1]][0]/g;j++) g188();
     if (C[i+2]>0) for (let j=0;j<A[C[i+2]][0]/g;j++) g172();
@@ -666,7 +649,9 @@ function Schliessen2() {
   Schienen=tz;
   S=structuredClone(S2);
   Logvar(L2,L1);
+  Schienenplot();
   }
+
   
 g188();
 k130r();
@@ -808,8 +793,10 @@ for (let z=0;z<zm;z++) k130r();
 Schienenplot();
 
 
+let scripttext='';
 //innerhalb scriptext kein \n verwenden weil das bereits von `...` ausgewertet wird!!!
-let scripttext=`
+
+  scripttext=`
 if (self.toString()=="[object DedicatedWorkerGlobalScope]") {
   postMessage("self.navigator.hardwareConcurrency="
     +self.navigator.hardwareConcurrency);
@@ -1082,16 +1069,41 @@ gemeinsamer_Nenner=1;
 
 `+'S='+JSON.stringify(S)+';\nredInd=[]\n'
 +`
+function pruefe_C(g) {
+  let i0=-1;
+  for (let d=0;d<37;d=d+3) {
+    if ((i0<0) && (C[d]>0) && ((Ausgangsmatrix[C[d]][0]/g)%2!=0)) i0=d;
+    }
+  if (i0==-1) return false; 
+  redInd.push(i0); 
+  return true;
+  }
+
+function Worker_Schliessen() {
+  redInd=[];
+  let A=[];
+  let g=1;
+  C=[];
+  do {
+    postMessage("do");
+    fuelle_Ausgangsmatrix(redInd);
+    Los();//startet Plus4.html
+    //id_weiter1000.click();
+    for (let w=0;w<1000;w++) if (p[2]>0 & p[3]>0) t(p[2],p[3]);
+    A=Ausgangsmatrix;
+    g=gemeinsamer_Nenner;
+    C=[];
+    x3x=[];
+    for (let i=0;i<D.length;i++) C[i]=-1;
+    for (let i=0;i<B.length;i++) if (B[i]>0) C[B[i]]=i;
+    } while (pruefe_C(g));
+  }
 
 postMessage("Hallo4 module");
-    fuelle_Ausgangsmatrix(redInd);
-postMessage("fuelle_Ausgangsmatrix(redInd) geschafft");
-    Los();//startet Plus4.html
-postMessage("Los geschafft");
-    for (let w=0;w<1000;w++) if (p[2]>0 & p[3]>0) t(p[2],p[3]);
-postMessage("id_weiter1000.click() geschafft");
+    Worker_Schliessen();
+postMessage("Worker_Schliessen() geschafft");
 postMessage('Ausgangsmatrix='+Ausgangsmatrix);
-
+postMessage({function:"Schliessen3",argument:[Ausgangsmatrix,gemeinsamer_Nenner,D,B]});
 
 `;
 
@@ -1119,7 +1131,9 @@ function Erzeuge_Worker(scripttext) {
         }
       } else { 
         //alert(JSON.stringify(SG));
-        self[SG.function](SG.argument)
+        //alert(SG.function);
+        //alert(self[SG.function]);
+        self[SG.function](SG.argument); //geht nicht als module!!!
         }
     }
   myWorker.onerror = (e) => {
