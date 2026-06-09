@@ -621,7 +621,7 @@ function pruefe_C(g) {
   }
 
 function Schliessen() {if (S.phi!=0) {alert('funktioniert momentan erst nur für Ausrichtung →'); return}
-  Erzeuge_Worker(scripttext);
+  Erzeuge_Worker(Erzeuge_scripttext());
   }
 
 function Schliessen3([Ausgangsmatrix,gemeinsamer_Nenner,D,B]) {
@@ -795,7 +795,7 @@ Schienenplot();
 
 let scripttext='';
 //innerhalb scriptext kein \n verwenden weil das bereits von `...` ausgewertet wird!!!
-
+function Erzeuge_scripttext() {
   scripttext=`
 if (self.toString()=="[object DedicatedWorkerGlobalScope]") {
   postMessage("self.navigator.hardwareConcurrency="
@@ -1107,8 +1107,9 @@ postMessage({function:"Schliessen3",argument:[Ausgangsmatrix,gemeinsamer_Nenner,
 
 `;
 
-Worker_scripttext.innerHTML=scripttext.replace(/</g,"&lt;");
-
+  Worker_scripttext.innerHTML=scripttext.replace(/</g,"&lt;");
+  return scripttext;
+  }
 
 let Ausgabe_Worker_flag=[true];
 
