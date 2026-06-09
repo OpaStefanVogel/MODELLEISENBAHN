@@ -19,7 +19,7 @@
   <button id='id_k130l' style='font-size:300%'>24130&ell;</button>
 &nbsp;
   <button id='id_pop' style='font-size:300%'>zurück</button>
-  <button id='id_Schliessen' style='font-size:300%'>Schließen <span style='display: flex; flex-direction:column; font-size:23%'><span>(dauert etwa 5 Sekunden, manchmal mehr)</span></style></button>
+  <button id='id_Schliessen' style='font-size:300%'><span id='id_text'>Schließen</span><span style='display: flex; flex-direction:column; font-size:23%'><span>(dauert etwa 5 Sekunden, manchmal mehr)</span></style></button>
   </div>
 
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
@@ -187,6 +187,8 @@ let Kurvenliste_r=[];
 let x3x=[];
 let redInd=[];
 let C=[];
+let Workermessage='';
+let Errormessage='';
 
 Logvar(L1,L1);
 
@@ -223,6 +225,7 @@ function Logvar(id,id2) {
   text=text+'Restschienen.length='+Restschienen.length+';<br/>\n';
   text=text+'redInd=['+redInd+'];<br/>\n';
   text=text+'x3x=['+x3x+'];<br/>\n';
+///  text=text+'xyz=['+xyz+'];<br/>\n';
   id2.innerHTML=id.innerHTML;
   id2.scrollTop = id2.scrollHeight;
   id.innerHTML=text;
@@ -288,6 +291,7 @@ function Schienenplot() {
   L3.innerText=st;
   content.innerHTML=st;
   L4.innerHTML=Schienenliste;
+  if (S.phi==0) id_text.innerHTML='Schließen'; else id_text.innerHTML='<s>Schließen</s>';
   }
 
 function Spop() {
@@ -576,7 +580,7 @@ gemeinsamer_Nenner=1;
     }
   for (let i=0;i<Ausgangsmatrix.length;i++) for (let j=0;j<ausblenden.length;j++) Ausgangsmatrix[i][ausblenden[j]]=0;
   }
-
+  
 function k115r() { Kurve('#k130l',180,30,-1) }
 function k115l() { Kurve('#k130r',180,30,1) }
 function zeichnex(d,A,C,g) {
@@ -603,11 +607,18 @@ function pruefe_C(g) {
   }
 
 function Schliessen() {if (S.phi!=0) {alert('funktioniert momentan erst nur für Ausrichtung →'); return}
+  
+  setTimeout(function() {Schliessen2();Schienenplot()},100);
+  }
+
+function Schliessen2() {
   redInd=[];
   let A=[];
   let g=1;
   C=[];
   do {
+    Erzeuge_Worker();
+//    alert(xyz);
     fuelle_Ausgangsmatrix(redInd);
     Los();//startet Plus4.html
     id_weiter100.click();
@@ -782,8 +793,70 @@ for (let z=0;z<zm;z++) k130r();
 //Schliessen(); 
 Schienenplot();
 
+
+
+let scripttext=`
+postMessage('Hallo module');
+`;
+
+function Erzeuge_Worker(scripttext) {
+  //let workerSource = document.querySelector("script#Workerscript");
+  //let workerBlob = new Blob([workerSource.text], { type: "application/javascript" });
+  let workerBlob = new Blob([scripttext], { type: "application/javascript" });
+  let workerUrl = URL.createObjectURL(workerBlob);
+  let myWorker = new Worker(workerUrl);
+  //URL.revokeObjectURL(workerUrl);
+
+
+  //const myWorker = new Worker('my_Worker.js');
+  myWorker.onmessage = (event) => {
+    let SG=event.data;
+    if ((typeof SG)=="string") {
+      if (Ausgabe_Worker_flag[0]) {
+        Workermessage=Workermessage+"\nMessage: "+event.data;
+        document.getElementById("Worker_message").innerHTML=Workermessage;
+        }
+      } else { 
+        //alert(JSON.stringify(SG));
+        self[SG.function](SG.argument)
+        }
+    }
+  myWorker.onerror = (e) => {
+    alert('ERROR in Worker, siehe Fehlerausgabe unter "Ausgabe von Worker"\n'+e.message);
+    Errormessage="<b>ERROR: "+e.message+'</b> <a href="#Fehlerausgabe2">in line '+e.lineno+" at col "+e.colno+"</a>";
+    document.getElementById("Disp_Worker").firstElementChild.innerHTML=Errormessage;
+    Workermessage=Workermessage+"\n<b>ERROR: "+e.message+"</b> in line "+e.lineno+" at col "+e.colno+":\n"+e.stack+"\n";
+    let Textstelle_davor=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno);
+    let Textstelle=Textstelle_davor+e.colno;
+    let Textstelle_danach=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno+1);
+    if (Textstelle_danach-Textstelle>100) Textstelle_danach=Textstelle+100;
+    if (e.colno>100) Textstelle_davor=Textstelle-100;
+    Workermessage=Workermessage+scripttext.slice(Textstelle_davor,Textstelle).replace(/</g,"&lt;")+'<a id="Fehlerausgabe1" href="#Fehlerausgabe2" style="background-color:gray">'+scripttext.slice(Textstelle,Textstelle_danach).replace(/</g,"&lt;")+"</a>";
+    document.getElementById("Worker_message").innerHTML=Workermessage;
+    let filetext="";
+    //fetch(e.filename).then(x => x.text()).then(y => document.getElementById("Worker_scripttext").innerHTML=y.replace(/</g,"&lt;"));
+    document.getElementById("Worker_scripttext").innerHTML=scripttext.slice(0,Textstelle).replace(/</g,"&lt;")+'<a id="Fehlerausgabe2" href="#Fehlerausgabe1" style="background-color:gray">'+scripttext.slice(Textstelle,Textstelle_danach).replace(/</g,"&lt;")+"</a>"+scripttext.slice(Textstelle_danach).replace(/</g,"&lt;");
+    selectText("Worker_scripttext");
+    }
+
+
+//  let jdoc={"Button":"Worker_los(SG);","Winkel":Winkel_als_Array,"Rechenweg":Rechenweg};
+//  myWorker.postMessage(jdoc);
+  
+  //Worker_Verzweigungen_bestimmen();
+
+  return myWorker;
+  }
+
+
   </script>
 
+<hr/>
+<div id="Worker_message" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
+Worker_message  </div>
+<hr/>
+<div id="Worker_scripttext" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:110%; color:black;">
+Worker_scripttext  </div>
 </body>
   </html>
 
