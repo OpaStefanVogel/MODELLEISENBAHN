@@ -796,8 +796,31 @@ Schienenplot();
 
 
 let scripttext=`
+if (self.toString()=="[object DedicatedWorkerGlobalScope]") {
+  postMessage("self.navigator.hardwareConcurrency="
+    +self.navigator.hardwareConcurrency);
+  postMessage("self.toString()="+self.toString());
+  onmessage = (event) => {
+    let SG=event.data;
+    postMessage(JSON.stringify(SG));
+    postMessage("event.ports="+JSON.stringify(event.ports));
+    //postMessage(eval("let xxx=77"));
+    //postMessage(xxx);
+    postMessage("Starte eval("+SG.Button+")");
+    eval(SG.Button);
+    if (event.ports.length) event.ports[0].postMessage({"result":"oho, hat funktioniert"});
+    let j=1;
+    for (let i=0;i<0*1000000000;i++) {
+      if (j%100000000==0) postMessage(j);
+      j=j+1}
+    postMessage(`Hi, ${event.data}`);
+    //postMessage({function:"alert", argument:789})
+    };
+  onerror = (e) => {postMessage("Fehlerausgabe von Worker onerror=...\nonerror = "+e)} //aha, hier funktioniert e.lineno nicht, erst in myWorker.onerror
+  }
 postMessage('Hallo module');
 `;
+let Ausgabe_Worker_flag=[true];
 
 function Erzeuge_Worker(scripttext) {
   //let workerSource = document.querySelector("script#Workerscript");
@@ -809,7 +832,7 @@ function Erzeuge_Worker(scripttext) {
 
 
   //const myWorker = new Worker('my_Worker.js');
-  myWorker.onmessage = (event) => {
+  myWorker.onmessage = (event) => {alert(1);
     let SG=event.data;
     if ((typeof SG)=="string") {
       if (Ausgabe_Worker_flag[0]) {
@@ -836,7 +859,7 @@ function Erzeuge_Worker(scripttext) {
     let filetext="";
     //fetch(e.filename).then(x => x.text()).then(y => document.getElementById("Worker_scripttext").innerHTML=y.replace(/</g,"&lt;"));
     document.getElementById("Worker_scripttext").innerHTML=scripttext.slice(0,Textstelle).replace(/</g,"&lt;")+'<a id="Fehlerausgabe2" href="#Fehlerausgabe1" style="background-color:gray">'+scripttext.slice(Textstelle,Textstelle_danach).replace(/</g,"&lt;")+"</a>"+scripttext.slice(Textstelle_danach).replace(/</g,"&lt;");
-    selectText("Worker_scripttext");
+//    selectText("Worker_scripttext");
     }
 
 
@@ -844,6 +867,7 @@ function Erzeuge_Worker(scripttext) {
 //  myWorker.postMessage(jdoc);
   
   //Worker_Verzweigungen_bestimmen();
+  alert(myWorker);
 
   return myWorker;
   }
@@ -851,6 +875,8 @@ function Erzeuge_Worker(scripttext) {
 
   </script>
 
+<hr/>
+<span id="Disp_Worker"> Disp_Worker<span>
 <hr/>
 <div id="Worker_message" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
 Worker_message  </div>
