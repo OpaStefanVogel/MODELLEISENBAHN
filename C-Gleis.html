@@ -59,85 +59,17 @@
     </g>
   </svg></div></div>
 
+<div id='L4' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto; height:80px'>Logfile4</div>
+<div id='L3' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto; height:80px'>Logfile3</div>
+
 <hr/>
 Worker_message=
 <div id="Worker_message" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
-Worker_message  </div>
-<div id='L4' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto; height:40px'>Logfile4</div>
-<div id='L3' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto; height:40px'>Logfile3</div>
-
-
-
-
-<div>Input <i>(javascript, "." als Dezimaltrenner)</i>:</div>
-<textarea id="input" cols="40" rows="10" >Ausgangsmatrix=[ 
-  [  1,  0,  0, -1,  0,  0, -2,  0 ],
-  [  0,  1, -1,  0,  0,  0,  1,  0 ],
-  [  0,  0,  0,  0,  1, -1,  1,  0 ],
-  [  0,  0,  0,  0,  1,  1,  0, -2 ],
-  [  0,  1,  1,  0,  0,  0,  0,  1 ],
-  [  1,  0,  0,  1,  0,  0,  0,  1 ] 
-  ];
-
-//zu Aufgabe5:
-Ausgangsmatrix=[
-//          k   Y  X g19 g17
-  [     0,  0,  0, 0,  0, 0  ],
-  [     1,  0, -1, 2,  0, 0  ],
-  [    -1,  0,  1,-2,  0, 0  ],
-  [     0,  0,  0,-1,  1, 0  ],
-  [     0,  0,  0, 1, -1, 0  ],
-  [     0,  0,  0,-1,  0, 1  ],
-  [     0,  0,  0, 1,  0,-1  ],
-  [    -3,  0,  1, 0,  0, 0  ],
-  [     3,  0, -1, 0,  0, 0  ],
-  [     1, -1,  1, 0,  0, 0  ],
-  [    -1,  1, -1, 0,  0, 0  ],
-  ] ;
-  
-
-
-gemeinsamer_Nenner=1;
-
-/*
-tausche(0,0);
-alert(Ausgangsmatrix.join("\n"));
-tausche(1,1);
-alert(Ausgangsmatrix.join("\n"));
-tausche(0,0);
-alert(Ausgangsmatrix.join("\n"));
-tausche(1,1);
-alert(Ausgangsmatrix.join("\n"));
-//tausche(1,2);
-//tausche(2,2);
-
-
-//tausche(1,1);
-//tausche(2,2);
-//tausche(3,3);
-//tausche(4,1);
-//tausche(2,2);
-//tausche(4,2);
-
-starte_Pivotverfahren();
-//Zusatz(1,1);
-*/
-</textarea>
-<button id='id_Los' onclick="Los()">losrechnen</button>
-<button id='id_weiter' onclick="t(p[2],p[3])">weiter</button>
-<button id='id_weiter100' onclick="for (let w=0;w<100;w++) if (p[2]>0 & p[3]>0) t(p[2],p[3])">100*weiter</button>
-<button id='id_zurueck' onclick="p=hist.pop(); t(p[0],p[1]); hist.pop()">zurueck</button>
-
-<div id="HCode" style='overflow:auto'> </div>
-<div id="Logfile" style="white-space:pre; font-family:Courier,Monospace; font-size:70%">
-  <div>
-<div id="Ausgabe">
-  <div>
-
+noch nix</div>
 <hr/>
 Worker_scripttext=
 <div id="Worker_scripttext" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:110%; color:black;">
-Worker_scripttext  </div>
+noch nix</div>
 <hr/>
 Disp_Worker=
 <span id="Disp_Worker">Disp_Worker<span>
@@ -159,11 +91,6 @@ id_k130r.addEventListener("click",function() {Kurve("#k130r",R,30,r);Schienenplo
 id_k130l.addEventListener("click",function() {Kurve("#k130l",R,30,l);Schienenplot()});
 id_pop.addEventListener("click",function() {Spop();Schienenplot()});
 id_Schliessen.addEventListener("click",function() {Schliessen();Schienenplot()});
-
-id_Los.addEventListener("click",function() {Los()});
-id_weiter.addEventListener("click",function() {t(p[2],p[3])});
-id_weiter100.addEventListener("click",function() {for (let w=0;w<100;w++) if (p[2]>0 & p[3]>0) t(p[2],p[3])});
-id_zurueck.addEventListener("click",function() {p=hist.pop(); t(p[0],p[1]); hist.pop()});
 
 let R=360;
 let d=(Math.sqrt(7)-2)/3*R;
@@ -306,6 +233,7 @@ function Schienenplot() {
   content.innerHTML=st;
   L4.innerHTML=Schienenliste;
   if (S.phi==0) id_text.innerHTML='Schließen'; else id_text.innerHTML='<s>Schließen</s>';
+  Logvar(L2,L1);
   }
 
 function Spop() {
@@ -418,7 +346,6 @@ function Schliessen3([Ausgangsmatrix,gemeinsamer_Nenner,D,B]) {
   Restschienen=Schienen;
   Schienen=tz;
   S=structuredClone(S2);
-  Logvar(L2,L1);
   Schienenplot();
   }
 
@@ -612,7 +539,6 @@ function Los() {
   B=[]; for (let i=0;i<m;i++) B[i]=-1-i;
   hist=[];
   p=suche_Pivot();
-  Ausgabe();
   }
 
 function tausche(r,s) {
@@ -649,14 +575,6 @@ function t(r,s) {
   tausche(p[2],p[3]);
   p=suche_Pivot();
   //alert("p="+p+"<br/>r="+xy(p[0])+"; s="+xy(p[1])+";<br/><br/>[ ["+Ausgangsmatrix.join("],<br/>  [")+"] ] / "+gemeinsamer_Nenner);
-  //Ausgabe();
-  }
-
-function Ausgabe() {
-  LCode="D=["+D+"];<br/>B=["+B+"];<br/>p=["+[neu(p[0]),neu(p[1]),p[2],p[3],p[4]]+"];<br/>-------<br/>"+LCode;
-  HCode=Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
-  ///document.getElementById("Logfile").firstChild.nodeValue=LCode;
-  ///document.getElementById("HCode").innerHTML=HCode;  
   }
 
 function alt(bi) { if (bi<0) return n-bi-2; else return bi; }
@@ -683,85 +601,6 @@ function suche_Pivot() {
   //alert("suche_Pivot()<br/><br/>[ ["+Ausgangsmatrix.join("],<br/>  [")+"] ] / "+gemeinsamer_Nenner+"<br/><br/>r="+r+"; s="+s+"; ri="+ri+"; sj="+sj+";<br/>");
   //alert([3,r,s,ri,sj,v]);
   return [r,s,ri,sj,v];
-  }
-
-function starte_Pivotverfahren() {postMessage('starte_Pivotverfahren()')
-  m=Ausgangsmatrix.length;
-  n=Ausgangsmatrix[0].length;
-  D=[0]; for (let j=1;j<n;j++) D[j]=j;
-  B=[0]; for (let i=1;i<m;i++) B[i]=n+i-1;
-  p=suche_Pivot();
-  LCode="Ausgangsmatrix und Ergebnis der ersten Pivotsuche:<br/><br/>[ ["+Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
-  HCode="<p>Ausgangsmatrix und Ergebnis der ersten Pivotsuche:<p>"+Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
-  while (p[2]>0&&p[3]>0) {
-    let merk=B[p[2]];
-    B[p[2]]=D[p[3]];
-    D[p[3]]=merk;
-    //alert("B=["+B+"]; D=["+D+"];");
-    tausche(p[2],p[3]);
-    p=suche_Pivot();
-    LCode=LCode+"<br/><br/>Zwischenergebnis und weitere Pivotsuche:<br/><br/>[ ["+Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
-    if (p[2]>0&&p[3]>0)
-      HCode=HCode+"<p>Zwischenergebnis und Ergebnis der nächsten Pivotsuche:<p>";
-      else HCode=HCode+"<p>letztes Ergebnis (kein Pivot mehr gefunden):<p>";
-    HCode=HCode+Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
-    }
-  LCode=LCode+"<br/><br/>Ergebnis:<br/><br/>[ ["+Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
-  document.getElementById("Logfile").firstChild.nodeValue=LCode;
-  document.getElementById("HCode").innerHTML=HCode;
-  }
-
-function Zusatz(i,j) {
-  let merk=B[i];
-  B[i]=D[j];
-  D[j]=merk;
-  tausche(i,j);
-  p=suche_Pivot();
-  LCode=LCode+"<br/><br/>Zusatzschritt:<br/><br/>[ ["+Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
-  HCode=HCode+"<p>Zusatzschritt:<p>";
-  HCode=HCode+Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p);
-  document.getElementById("Logfile").firstChild.nodeValue=LCode;
-  document.getElementById("HCode").innerHTML=HCode;
-  }
-
-function Ausgabe_Logfile(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p) {
-  let T=Ausgangsmatrix.join("],<br/>  [")+"] ] / "
-    +gemeinsamer_Nenner+"<br/><br/>B=["+B+"]; D=["+D+"];"
-    +"<br/><br/>r="+p[0]+"; s="+p[1]+"; ri="+p[2]+"; sj="+p[3]+";<br/>";
-  return T;
-  }
-
-function Ausgabe_HCode(Ausgangsmatrix,gemeinsamer_Nenner,B,D,p) {
-  let T='<table style="font-style:italic;font-size:「」80%" border="1"><br/>';
-  let Nenner=gemeinsamer_Nenner;
-//  if (p[2]>0&&p[3]>0) Nenner=1;
-  T=T+"<tr>"+"<td>"+Nenner+"</td>";
-  for (let j=0;j<n;j++) {
-      T=T+"<td>";
-      if (D[j]>=0) T=T+"x<sub>"+D[j]+"</sub></td>"; 
-        else T=T+"y<sub>"+(-1-D[j])+"</sub></td>";
-      }
-  for (let i=0;i<m;i++) {
-    T=T+"<tr>";
-    if (B[i]<0) T=T+"<td>y<sub>"+(-1-B[i])+"</sub></td>"; 
-      else T=T+"<td>x<sub>"+(B[i])+"</sub></td>";
-    for (let j=0;j<n;j++) {
-      if (i==p[2]&&j==p[3]) T=T+'<td style="color:blue; border:solid"';
-        else T=T+"<td";
-      if (j>0&Ausgangsmatrix[i][0]<0&Ausgangsmatrix[i][j]>0) T=T+' class="zulaessig"';
-      if (j>0&Ausgangsmatrix[0][j]>0&Ausgangsmatrix[i][j]<0) T=T+' class="fortschritt"';
-      T=T+' onclick="t('+i+","+j+')">';
-      if (Ausgangsmatrix[i][j]>=0) T=T+"+";
-      T=T+(Ausgangsmatrix[i][j])+"</td>";
-      }
-    T=T+"</tr>";
-    }
-//  T=T+Ausgangsmatrix.join("],<br/>  [")+"] ] / "
-//    +gemeinsamer_Nenner+"<br/><br/>B=["+B+"]; D=["+D+"];"
-//    +"<br/><br/>r="+p[0]+"; s="+p[1]+"; ri="+p[2]+"; sj="+p[3]+";<br/>";
-  T=T+"</table>";
-  //alert(T);
-  return T;
   }
 
   postMessage('Hallo2 module');
@@ -953,6 +792,6 @@ ok L1 L2 ans Ende scrollen
 .. Lösung3_1 und 3_2 zusammenziehen
 .. Teillösung4 komprimieren
 .. Versuch 180 Grad Drehung als Anfangslösung nehmen
-.. warum geht das ohne Worker so langsam?
-.. warum geht self[SG.function] nicht in module
+.. warum geht das ohne Worker so langsam? Wegen .innerHTML=HCode
+.. warum geht self[SG.function] nicht in module?
   -->
