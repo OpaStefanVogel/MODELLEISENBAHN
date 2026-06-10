@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <style type="text/css">
     </style>
+  <head>
 
 <!-- <EISENB><HILLI>ok hab d=(Math.sqrt(7)-2)/3*R</HILLI></EISENB> -->
 <body>
@@ -19,7 +20,6 @@
   <button id='id_k130l' style='font-size:300%'>24130&ell;</button>
 &nbsp;
   <button id='id_pop' style='font-size:300%'>zurück</button>
-  <button id='id_Schliessen' style='font-size:300%'><span id='id_text'>Schließen</span><span style='display: flex; flex-direction:column; font-size:23%'><span>(dauert etwa 5 Sekunden, manchmal mehr)</span></style></button>
   </div>
 
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
@@ -74,7 +74,6 @@ noch nix</div>
 Disp_Worker=
 <span id="Disp_Worker">Disp_Worker<span>
 </body>
-  </html>
 
 
 <style>
@@ -85,12 +84,11 @@ Disp_Worker=
 
 
 <script>
-id_g188.addEventListener("click",function() {Gerade("#g188",m188);Schienenplot()});
-id_g172.addEventListener("click",function() {Gerade("#g172",m172);Schienenplot()});
-id_k130r.addEventListener("click",function() {Kurve("#k130r",R,30,r);Schienenplot()});
-id_k130l.addEventListener("click",function() {Kurve("#k130l",R,30,l);Schienenplot()});
-id_pop.addEventListener("click",function() {Spop();Schienenplot()});
-id_Schliessen.addEventListener("click",function() {Schliessen();Schienenplot()});
+id_g188.addEventListener("click",function() {Gerade("#g188",m188);Schliessen()});
+id_g172.addEventListener("click",function() {Gerade("#g172",m172);Schliessen()});
+id_k130r.addEventListener("click",function() {Kurve("#k130r",R,30,r);Schliessen()});
+id_k130l.addEventListener("click",function() {Kurve("#k130l",R,30,l);Schliessen()});
+id_pop.addEventListener("click",function() {Spop();Schliessen()});
 
 let R=360;
 let d=(Math.sqrt(7)-2)/3*R;
@@ -232,7 +230,6 @@ function Schienenplot() {
   L3.innerText=st;
   content.innerHTML=st;
   L4.innerHTML=Schienenliste;
-  if (S.phi==0) id_text.innerHTML='Schließen'; else id_text.innerHTML='<s>Schließen</s>';
   Logvar(L2,L1);
   }
 
@@ -277,9 +274,6 @@ function k130r() { Kurve('#k130r',360,30,1) }
 function k130l() { Kurve('#k130l',360,30,-1) }
 
 
-//Schliessen(); 
-//Schienenplot();
-
 //Anfang Plus1.html
 let Ausgangsmatrix=[];
 let gemeinsamer_Nenner=1;
@@ -318,7 +312,7 @@ function pruefe_C(g) {
   return true;
   }
 
-function Schliessen() {if (S.phi!=0) {alert('funktioniert momentan erst nur für Ausrichtung →'); return}
+function Schliessen() {if (S.phi!=0) {Schienenplot(); return; alert('funktioniert momentan erst nur für Ausrichtung →'); return}
   Erzeuge_Worker(Erzeuge_scripttext());
   }
 
@@ -779,6 +773,7 @@ function suche_Textstelle_ab_Zeilennummer(text,Zeilennummer) {
   return Textstelle;
   }
 
+Schliessen();
 
   </script>
 
@@ -795,3 +790,6 @@ ok L1 L2 ans Ende scrollen
 .. warum geht das ohne Worker so langsam? Wegen .innerHTML=HCode
 .. warum geht self[SG.function] nicht in module?
   -->
+  
+  
+  </html>
