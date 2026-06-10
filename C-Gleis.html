@@ -19,6 +19,7 @@
   <button id='id_k130r' style='font-size:300%'>24130r</button>
   <button id='id_k130l' style='font-size:300%'>24130&ell;</button>
 &nbsp;
+  <button id='id_vor' style='font-size:300%'>vor</button>
   <button id='id_pop' style='font-size:300%'>zurück</button>
   </div>
 
@@ -88,6 +89,7 @@ id_g188.addEventListener("click",function() {Gerade("#g188",m188);Schliessen()})
 id_g172.addEventListener("click",function() {Gerade("#g172",m172);Schliessen()});
 id_k130r.addEventListener("click",function() {Kurve("#k130r",R,30,r);Schliessen()});
 id_k130l.addEventListener("click",function() {Kurve("#k130l",R,30,l);Schliessen()});
+id_vor.addEventListener("click",function() {vor();Schliessen()});
 id_pop.addEventListener("click",function() {Spop();Schliessen()});
 
 let R=360;
@@ -128,6 +130,7 @@ let redInd=[];
 let C=[];
 let Workermessage='';
 let Errormessage='';
+let myWorkers=[];
 
 Logvar(L1,L1);
 
@@ -164,6 +167,7 @@ function Logvar(id,id2) {
   text=text+'Restschienen.length='+Restschienen.length+';<br/>\n';
   text=text+'redInd=['+redInd+'];<br/>\n';
   text=text+'x3x=['+x3x+'];<br/>\n';
+  text=text+'myWorkers.length='+myWorkers.length+';<br/>\n';
 ///  text=text+'xyz=['+xyz+'];<br/>\n';
   id2.innerHTML=id.innerHTML;
   id2.scrollTop = id2.scrollHeight;
@@ -233,8 +237,14 @@ function Schienenplot() {
   Logvar(L2,L1);
   }
 
+function vor() {
+  let V=Restschienen.shift();
+  self['id_'+V.Bild.slice(1)].click();
+  }
+
 function Spop() {
   S=Schienen.pop();
+  Restschienen.unshift(S);
   //S=structuredClone(L);
   }
 
@@ -313,7 +323,10 @@ function pruefe_C(g) {
   }
 
 function Schliessen() {if (S.phi!=0) {Schienenplot(); return; alert('funktioniert momentan erst nur für Ausrichtung →'); return}
-  Erzeuge_Worker(Erzeuge_scripttext());
+  Kurvenliste_l=[];
+  Kurvenliste_r=[];
+  while(myWorkers.length>0) myWorkers.pop().terminate();
+  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext()));
   }
 
 function Schliessen3([Ausgangsmatrix,gemeinsamer_Nenner,D,B]) {
