@@ -21,6 +21,7 @@
 &nbsp;
   <button id='id_vor' style='font-size:300%'>vor</button>
   <button id='id_pop' style='font-size:300%'>zurück</button>
+  <span id='id_tnr1'>0</span>
   </div>
 
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
@@ -326,7 +327,7 @@ function Schliessen() {if (S.phi!=0) {Schienenplot(); return; alert('funktionier
   Kurvenliste_l=[];
   Kurvenliste_r=[];
   while(myWorkers.length>0) myWorkers.pop().terminate();
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext()));
+  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(1)));
   }
 
 function Schliessen3([Ausgangsmatrix,gemeinsamer_Nenner,D,B]) {
@@ -356,7 +357,11 @@ function Schliessen3([Ausgangsmatrix,gemeinsamer_Nenner,D,B]) {
   Schienenplot();
   }
 
-  
+function schreibe_tnr([wnr,dnr,tnr]) {
+  id_tnr1.innerText=wnr+' '+dnr+' '+tnr;
+  }
+
+
 g188();
 k130r();
 g188();
@@ -499,7 +504,7 @@ Schienenplot();
 
 let scripttext='';
 //innerhalb scriptext kein \n verwenden weil das bereits von `...` ausgewertet wird!!!
-function Erzeuge_scripttext() {
+function Erzeuge_scripttext(wnr) {
   scripttext=`
 if (self.toString()=="[object DedicatedWorkerGlobalScope]") {
   postMessage("self.navigator.hardwareConcurrency="
@@ -534,6 +539,9 @@ let LCode="";
 let HCode="";
 let p=[];
 let hist=[];
+let wnr=0;
+let tnr=0;
+let dnr=0;
 
 function Los() {
   //alert(document.getElementById("input").value);
@@ -581,6 +589,8 @@ function t(r,s) {
   D[p[3]]=merk;
   tausche(p[2],p[3]);
   p=suche_Pivot();
+  tnr=tnr+1;
+  postMessage({function:'schreibe_tnr', argument:[wnr,dnr,tnr]});
   //alert("p="+p+"<br/>r="+xy(p[0])+"; s="+xy(p[1])+";<br/><br/>[ ["+Ausgangsmatrix.join("],<br/>  [")+"] ] / "+gemeinsamer_Nenner);
   }
 
@@ -612,9 +622,8 @@ function suche_Pivot() {
 
   postMessage('Hallo2 module');
 
-
-
-
+`+'S='+JSON.stringify(S)+';\nwnr='+wnr+';\n'
++`
 
 function fuelle_Ausgangsmatrix(ausblenden) {
 Ausgangsmatrix=[
@@ -683,8 +692,6 @@ gemeinsamer_Nenner=1;
 
   postMessage('Hallo3 module');
 
-`+'S='+JSON.stringify(S)+';\nredInd=[]\n'
-+`
 function pruefe_C(g) {
   let i0=-1;
   for (let d=0;d<37;d=d+3) {
@@ -712,6 +719,8 @@ function Worker_Schliessen() {
     x3x=[];
     for (let i=0;i<D.length;i++) C[i]=-1;
     for (let i=0;i<B.length;i++) if (B[i]>0) C[B[i]]=i;
+    dnr=dnr+1;
+    postMessage("wnr="+wnr+"; dnr="+dnr);
     } while (pruefe_C(g));
   }
 
