@@ -1,3 +1,10 @@
+# Schienenkreis automatisch schließen
+
+https://opastefanvogel.github.io/MODELLEISENBAHN/C-Gleis.html
+
+vorerst schließt der Kreis nur, wenn die letzte Schiene genau nach rechts zeigt.
+
+Uralt und längst nicht mehr in Betrieb:
 # PLAUENER_MODELLEISENBAHN
 
 ```
@@ -7,4 +14,5 @@ Modellbahnpult  für den Raspberry Pi Zero W im Eisenbahnpult
 Modellbahnbrett für den Raspberry PI Zero W im Eisenbahnbrett
 ```
 
-https://opastefanvogel.github.io/PLAUENER_MODELLEISENBAHN/PLAUENER_MODELLEISENBAHN.html
+https://opastefanvogel.github.io/MODELLEISENBAHN/PLAUENER_MODELLEISENBAHN.html
+

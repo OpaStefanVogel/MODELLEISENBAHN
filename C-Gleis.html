@@ -229,7 +229,7 @@ function Schienenplot() {
     }
   for (let i=0;i<Restschienen.length;i++) {
     let S=Restschienen[i];
-    st=st+'<use id="Restschiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" stroke="red" stroke-width="30" opacity="0.1"/>\n  ';
+    st=st+'<use id="Restschiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" stroke="red" stroke-width="30" opacity="0.7"/>\n  ';
     }
   st=st+'<use id="Schienenlegezug1" href="#Schienenlegezug" transform="translate('+S.x+','+S.y+') rotate('+S.phi+')"/>\n  ';
 
