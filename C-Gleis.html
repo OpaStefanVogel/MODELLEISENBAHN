@@ -9,8 +9,8 @@
 <!-- <EISENB><HILLI>ok hab d=(Math.sqrt(7)-2)/3*R</HILLI></EISENB> -->
 <body>
 <div id='Logfiles' style='display:flex'>
-  <div id='L1' style='display:block; border:solid; margin:10px; height:200px; overflow:auto'>Logfile1</div>
-  <div id='L2' style='display:block; border:solid; margin:10px; height:200px; overflow:auto'>Logfile2</div>
+  <div id='L1' style='display:block; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile1</div>
+  <div id='L2' style='display:block; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile2</div>
   </div>
 
 <div style='display:flex'>
@@ -91,7 +91,7 @@ id_g188.addEventListener("click",function() {Gerade("#g188",m188);Schliessen()})
 id_g172.addEventListener("click",function() {Gerade("#g172",m172);Schliessen()});
 id_k130r.addEventListener("click",function() {Kurve("#k130r",R,30,r);Schliessen()});
 id_k130l.addEventListener("click",function() {Kurve("#k130l",R,30,l);Schliessen()});
-id_vor.addEventListener("click",function() {vor();Schliessen()});
+id_vor.addEventListener("click",function() {vor();Schienenplot()});
 id_pop.addEventListener("click",function() {Spop();Schliessen()});
 id_Neustart.addEventListener("click",function() {Schienen.length=1;Spop();Schliessen()});
 
@@ -134,6 +134,7 @@ let C=[];
 let Workermessage='';
 let Errormessage='';
 let myWorkers=[];
+let pusher=0;
 
 Logvar(L1,L1);
 
@@ -242,12 +243,14 @@ function Schienenplot() {
 
 function vor() {
   let V=Restschienen.shift();
-  self['id_'+V.Bild.slice(1)].click();
+  Schienen.push(structuredClone(V));
+  S=structuredClone(Restschienen[0]);
+  //self['id_'+V.Bild.slice(1)].click();
   }
 
 function Spop() {
   S=Schienen.pop();
-  Restschienen.unshift(S);
+  Restschienen.unshift(structuredClone(S));
   //S=structuredClone(L);
   }
 
@@ -325,10 +328,13 @@ function pruefe_C(g) {
   return true;
   }
 
-function Schliessen() {if (S.phi!=0) {Schienenplot(); return; alert('funktioniert momentan erst nur für Ausrichtung →'); return}
+function Schliessen() {
+  while(myWorkers.length>0) myWorkers.pop().terminate();
+  Schienenplot();
   Kurvenliste_l=[];
   Kurvenliste_r=[];
-  while(myWorkers.length>0) myWorkers.pop().terminate();
+  pusher=0;
+  while (S.phi!=0) {pusher=pusher+1;k130r()};
   myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(1)));
   }
 
@@ -356,6 +362,11 @@ function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B) {
   Restschienen=Schienen;
   Schienen=tz;
   S=structuredClone(S2);
+  //alert(pusher);
+  for (let i=0;i<pusher;i++) Spop();
+  let Vollkreis=true;
+  if (Restschienen.length>=12) for (let i=0;i<12;i++) if (Restschienen[i].Bild!='#k130r') Vollkreis=false;
+  if (Vollkreis==true) Restschienen=Restschienen.slice(12);
   Schienenplot();
   }
 
@@ -364,119 +375,6 @@ function schreibe_tnr(wnr,dnr,tnr) {
   }
 
 
-g188();
-k130r();
-g188();
-k130r();
-g188();
-k130r();
-g188();
-k130r();
-g188();
-k130r();
-g188();
-k130r();
-k130l();
-k130l();
-k130l();
-k130l();
-k130l();
-k130l();
-k130l();
-k130l();
-k130l();
-k130r();
-k130r();
-k130l();
-k130r();
-k130r();
-g188();
-g188();
-k130l();
-g188();
-g188();
-g188();
-k130r();
-k130r();
-k130r();
-k130l();
-k130l();
-k130l();
-k130l();
-k130l();
-k130l();
-g188();
-g188();
-k130r();
-k130r();
-k130r();
-k130r();
-g172();
-g172();
-g172();
-k130l();
-k130l();
-k130l();
-k130l();
-k130l();
-g172();
-g172();
-g172();
-g172();
-k130r();
-k130r();
-k130r();
-k130r();
-k130r();
-g172();
-g172();
-g172();
-g172();
-g188();
-g188();
-g188();
-k130r();
-g172();
-g172();
-k130l();
-k130r();
-k130r();
-k130r();
-k130r();
-g188();
-g188();
-g188();
-g188();
-k130l();
-g188();
-g188();
-g188();
-g188();
-k130r();
-k130r();
-k130r();
-g188();
-g188();
-g188();
-g188();
-k130l();
-g188();
-k130r();
-k130l();
-k130r();
-k130l();
-k130r();
-k130l();
-k130r();
-k130l();
-k130l();
-k130r();
-k130l();
-k130l();
-k130l();
-k130l();
-k130l();
-//redInd=[9,15];
 
 
 /*let zm=0;
@@ -797,6 +695,158 @@ function suche_Textstelle_ab_Zeilennummer(text,Zeilennummer) {
   return Textstelle;
   }
 
+
+g188();
+k130r();
+g188();
+k130r();
+g188();
+k130r();
+g188();
+k130r();
+g188();
+k130r();
+g188();
+k130r();
+k130l();
+k130l();
+k130l();
+k130l();
+k130l();
+k130l();
+k130l();
+k130l();
+k130l();
+k130r();
+k130r();
+k130l();
+k130r();
+k130r();
+g188();
+g188();
+k130l();
+g188();
+g188();
+g188();
+k130r();
+k130r();
+k130r();
+k130l();
+k130l();
+k130l();
+k130l();
+k130l();
+k130l();
+g188();
+g188();
+k130r();
+k130r();
+k130r();
+k130r();
+g172();
+g172();
+g172();
+k130l();
+k130l();
+k130l();
+k130l();
+k130l();
+g172();
+g172();
+g172();
+g172();
+k130r();
+k130r();
+k130r();
+k130r();
+k130r();
+g172();
+g172();
+g172();
+g172();
+g188();
+g188();
+g188();
+k130r();
+g172();
+g172();
+k130l();
+k130r();
+k130r();
+k130r();
+k130r();
+g188();
+g188();
+g188();
+g188();
+k130l();
+g188();
+g188();
+g188();
+g188();
+k130r();
+k130r();
+k130r();
+g188();
+g188();
+g188();
+g188();
+k130l();
+g188();
+k130r();
+k130l();
+k130r();
+k130l();
+k130r();
+k130l();
+k130r();
+k130l();
+k130l();
+k130r();
+k130l();
+k130l();
+k130l();
+k130l();
+k130l();
+k130r();
+k130r();
+k130r();
+k130r();
+k130r();
+k130l();
+k130r();
+k130l();
+k130r();
+k130l();
+k130r();
+k130r();
+g172();
+g172();
+g172();
+g172();
+g172();
+g172();
+g172();
+k130r();
+k130l();
+k130r();
+k130l();
+k130r();
+g188();
+g188();
+k130r();
+g188();
+k130r();
+g188();
+g188();
+g188();
+g188();
+g188();
+g188();
+g188();
+
+
+//redInd=[9,15];
 Schliessen();
 
   </script>
@@ -811,8 +861,12 @@ ok L1 L2 ans Ende scrollen
 .. Lösung3_1 und 3_2 zusammenziehen
 .. Teillösung4 komprimieren
 .. Versuch 180 Grad Drehung als Anfangslösung nehmen
-.. warum geht das ohne Worker so langsam? Wegen .innerHTML=HCode
+ok warum geht das ohne Worker so langsam? aha wegen .innerHTML=HCode
 .. warum geht self[SG.function] nicht in module?
+.. zurueck() geht nur langsam drücken
+.. beim letzten vor() Endlosschleife
+.. mehrfach Neustart
+.. undo nach Neustart
   -->
   
   
