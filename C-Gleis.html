@@ -12,10 +12,9 @@
   <div id='L1' style='display:block; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile1</div>
   <div id='L2' style='display:block; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile2</div>
   </div>
-<div id='L0' style='display:none; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile3</div>
 
 
-<div style='display:flex'>
+<div id='id_Buttons' style='display:flex'>
   <button id='id_g188' style='font-size:300%'>24188</button>
   <button id='id_g172' style='font-size:300%'>24172</button>
   <button id='id_k130r' style='font-size:300%'>24130r</button>
@@ -23,14 +22,8 @@
 &nbsp;
   <button id='id_vor' style='font-size:300%'>vor</button>
   <button id='id_pop' style='font-size:300%'>zurück</button>
-  <button id='id_Neustart' style='font-size:300%'>Neustart</button>
-  <span id='id_tnr1'>0</span>,
-  <span id='id_tnr2'>0</span>,
-  <span id='id_tnr3'>0</span>,
-  <span id='id_tnr4'>0</span>,
-  <span id='id_tnr5'>0</span>,
-  <span id='id_tnr6'>0</span>,
-  <span id='id_tnr7'>0</span>,
+  <button id='id_Neustart' style='font-size:300%'>ganz zurück</button>
+&nbsp;
   </div>
 
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
@@ -69,21 +62,36 @@
     
     </g>
   </svg></div></div>
-
-<div id='L4' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto; height:80px'>Logfile4</div>
-<div id='L3' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto; height:80px'>Logfile3</div>
-
+  
 <hr/>
-Worker_message=
-<div id="Worker_message" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
-noch nix</div>
+Worker Messages=
+<div style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
+  <div style='flex-direction:row'>  <span id='id_tnr1'>0</span>,
+  <span id='id_tnr2'>0</span>,
+  <span id='id_tnr3'>0</span>,
+  <span id='id_tnr4'>0</span>,
+  <span id='id_tnr5'>0</span>,
+  <span id='id_tnr6'>0</span>,
+  <span id='id_tnr7'>0</span>,
+    </div>
+  <div id='L0' style='display:none; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile3</div>
+  <div id='Worker_message'>sonst noch nix</div>
+  </div>
+<hr/>
+Worker Error=
+<span id="Disp_Worker">noch keiner</span>
 <hr/>
 Worker_scripttext=
-<div id="Worker_scripttext" style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:110%; color:black;">
+<div id="Worker_scripttext" style="display:flex; flex-direction:column; overflow:auto; white-space:pre; font-family:Courier,monospace; font-size:110%; color:black;">
 noch nix</div>
 <hr/>
-Disp_Worker=
-<span id="Disp_Worker">Disp_Worker<span>
+SVG=
+<div id='L3' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto'>Logfile3</div>
+<hr/>
+Schienen=
+<div id='L4' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto'>Logfile4</div>
+
+
 </body>
 
 
@@ -101,7 +109,7 @@ id_k130r.addEventListener("click",function() {Kurve("#k130r",R,30,r);Schliessen(
 id_k130l.addEventListener("click",function() {Kurve("#k130l",R,30,l);Schliessen()});
 id_vor.addEventListener("click",function() {vor();Schienenplot()});
 id_pop.addEventListener("click",function() {Spop();Schliessen()});
-id_Neustart.addEventListener("click",function() {Schienen.length=1;Spop();Schliessen()});
+id_Neustart.addEventListener("click",function() {Neustart()});
 
 let R=360;
 let d=(Math.sqrt(7)-2)/3*R;
@@ -144,6 +152,7 @@ let Errormessage='';
 let myWorkers=[];
 let pusher=[];
 let kuerzeste_Loesung=[0,0,0,0];
+let Schienenmerkliste=[];
 
 Logvar(L1,L1);
 
@@ -417,6 +426,19 @@ function schreibe_tnr(wnr,dnr,tnr,z) {
   document.getElementById('id_tnr'+wnr).innerText=' '+wnr+' '+dnr+' '+tnr+' '+z;
   }
 
+function Neustart() {
+  let n=Schienenmerkliste.length;
+  Schienenmerkliste.push(structuredClone([Schienen,S]));
+  let ttt=id_Neustart.cloneNode(true);
+  ttt.setAttribute('id','id_undo_'+n);
+  ttt.addEventListener("click",function() {[Schienen,S]=structuredClone(Schienenmerkliste[n]);Schliessen()});
+  ttt.innerHTML=n;
+  id_Buttons.appendChild(ttt);
+  g188();
+  Schienen.length=1;
+  Spop();
+  Schliessen();
+  }
 
 
 
@@ -578,7 +600,8 @@ Ausgangsmatrix=[
 /* z*/ //[  0, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 /* z*/ //[  0,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 /* z*/ //[  0, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
-/* z*/ [  0, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ //[  0, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ [  0, -1, -1, -8, -1, -1,-16, -1, -1,-24, -1, -1,-32, -1, -1,-40, -1, -1,-48, -1, -1,-56, -1, -1,-64, -1, -1,-72, -1, -1,-80, -1, -1,-88, -1, -1,-96,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
  
 //       x0, x1, x2, x3, x4, x5, x6, x7, x8  x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56  
 //horiz.  b,  0,  0, 15, 30, 30, 45, 60, 60, 75, 90, 90,105,120,120,135,150,150,165,180,180,195,210,210,225,240,240,255,270,270,285,300,300,315,330,330,345,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W],
