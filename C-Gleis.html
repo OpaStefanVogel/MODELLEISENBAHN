@@ -12,6 +12,8 @@
   <div id='L1' style='display:block; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile1</div>
   <div id='L2' style='display:block; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile2</div>
   </div>
+<div id='L0' style='display:none; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile3</div>
+
 
 <div style='display:flex'>
   <button id='id_g188' style='font-size:300%'>24188</button>
@@ -141,6 +143,7 @@ let Workermessage='';
 let Errormessage='';
 let myWorkers=[];
 let pusher=[];
+let kuerzeste_Loesung=[0,0,0];
 
 Logvar(L1,L1);
 
@@ -325,36 +328,47 @@ function Schliessen() {
   Schienenplot();
   Kurvenliste_l=[];
   Kurvenliste_r=[];
-  pusher=[];
+  kuerzeste_Loesung[0]=100000000;
 
+if (1) {
+  pusher=[];
   for (let i=0;i<0;i++) {k130l();pusher.push('k130l()')};
   while (S.phi!=0) {k130r();pusher.push('k130r()')};
   myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(1)));
   for (let i=0;i<pusher.length;i++) Spop();
+  }
 
+if (1) {
   pusher=[];
   for (let i=0;i<1;i++) {k130l();pusher.push('k130l()')};
   while (S.phi!=0) {k130r();pusher.push('k130r()')};
   myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(2)));
   for (let i=0;i<pusher.length;i++) Spop();
+  }
 
+if (1) {
   pusher=[];
   for (let i=0;i<2;i++) {k130l();pusher.push('k130l()')};
   while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(2)));
+  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(3)));
   for (let i=0;i<pusher.length;i++) Spop();
+  }
 
+if (1) {
   pusher=[];
   for (let i=0;i<3;i++) {k130l();pusher.push('k130l()')};
   while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(3)));
+  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(4)));
   for (let i=0;i<pusher.length;i++) Spop();
+  }
 
+if (1) {
   pusher=[];
   for (let i=0;i<4;i++) {k130l();pusher.push('k130l()')};
   while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(4)));
+  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(5)));
   for (let i=0;i<pusher.length;i++) Spop();
+  }
 
   }
 
@@ -385,10 +399,19 @@ function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher) {
   S=structuredClone(S2);
   //alert(pusher);
   for (let i=0;i<pusher.length;i++) Spop();
-  let Vollkreis=true;
-  if (Restschienen.length>=12) for (let i=0;i<12;i++) if (Restschienen[i].Bild!='#k130r') Vollkreis=false;
-  if (Vollkreis==true) Restschienen=Restschienen.slice(12);
-  Schienenplot();
+  for (let j=0;j<12;j++) if (Restschienen.length>=j+12) {
+    let Vollkreis=true;
+    for (let i=0;i<12;i++) if (Restschienen[j+i].Bild!='#k130r') Vollkreis=false;
+    if (Vollkreis==true) Restschienen.splice(j,12);
+    }
+  L0.innerHTML=L0.innerHTML+'<br/>'+Restschienen.length+' '+kuerzeste_Loesung[0]+' '+(Restschienen.length<kuerzeste_Loesung[0])+' '+pusher;
+  L0.innerHTML=L0.innerHTML+'<br/>ü '+Restschienen.length+' ü';
+  if (Restschienen.length<kuerzeste_Loesung[0]) {
+    L0.innerHTML=L0.innerHTML+'<br/>ä '+Restschienen.length+' ä';
+    kuerzeste_Loesung=[Restschienen.length,structuredClone(Schienen),structuredClone(Restschienen)];
+    L0.innerHTML=L0.innerHTML+'<br/>ö '+kuerzeste_Loesung+' ö';
+    Schienenplot();
+    } else {Schienen=structuredClone(kuerzeste_Loesung[1]); Restschienen=structuredClone(kuerzeste_Loesung[2])}
   }
 
 function schreibe_tnr(wnr,dnr,tnr) {
@@ -650,7 +673,7 @@ function Worker_Schliessen() {
 
 postMessage("Hallo4 module");
     Worker_Schliessen();
-postMessage("Worker_Schliessen() geschafft");
+postMessage('wnr='+wnr+"; Worker_Schliessen() geschafft");
 //postMessage('Ausgangsmatrix='+Ausgangsmatrix);
 postMessage({function:"Schliessen3",argument:[Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher]});
 
