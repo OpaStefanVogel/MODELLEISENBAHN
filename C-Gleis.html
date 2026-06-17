@@ -143,7 +143,7 @@ let Workermessage='';
 let Errormessage='';
 let myWorkers=[];
 let pusher=[];
-let kuerzeste_Loesung=[0,0,0];
+let kuerzeste_Loesung=[0,0,0,0];
 
 Logvar(L1,L1);
 
@@ -325,10 +325,11 @@ function pruefe_C(g) {
 
 function Schliessen() {
   while(myWorkers.length>0) myWorkers.pop().terminate();
+  Workermessage='';
   Schienenplot();
   Kurvenliste_l=[];
   Kurvenliste_r=[];
-  kuerzeste_Loesung[0]=100000000;
+  kuerzeste_Loesung=[100000000,0,0,-1000000000];
 
 if (1) {
   pusher=[];
@@ -372,7 +373,7 @@ if (1) {
 
   }
 
-function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher) {
+function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr) {
   eval(pusher.join(';'));
   redInd=[];
   let A=Ausgangsmatrix;
@@ -404,18 +405,16 @@ function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher) {
     for (let i=0;i<12;i++) if (Restschienen[j+i].Bild!='#k130r') Vollkreis=false;
     if (Vollkreis==true) Restschienen.splice(j,12);
     }
-  L0.innerHTML=L0.innerHTML+'<br/>'+Restschienen.length+' '+kuerzeste_Loesung[0]+' '+(Restschienen.length<kuerzeste_Loesung[0])+' '+pusher;
-  L0.innerHTML=L0.innerHTML+'<br/>ü '+Restschienen.length+' ü';
-  if (Restschienen.length<kuerzeste_Loesung[0]) {
-    L0.innerHTML=L0.innerHTML+'<br/>ä '+Restschienen.length+' ä';
-    kuerzeste_Loesung=[Restschienen.length,structuredClone(Schienen),structuredClone(Restschienen)];
-    L0.innerHTML=L0.innerHTML+'<br/>ö '+kuerzeste_Loesung+' ö';
+  L0.innerHTML=L0.innerHTML+'<br/>ä '+wnr+' '+Restschienen.length+' '+kuerzeste_Loesung[0]+' '+A[0][0]+' '+kuerzeste_Loesung[3]+' ä';
+  if ((Restschienen.length<kuerzeste_Loesung[0])||((Restschienen.length==kuerzeste_Loesung[0])&&(A[0][0]>kuerzeste_Loesung[3]))) {
+    kuerzeste_Loesung=[Restschienen.length,structuredClone(Schienen),structuredClone(Restschienen),A[0][0]];
+    L0.innerHTML=L0.innerHTML+'<br/>ö '+kuerzeste_Loesung[0]+' ö';
     Schienenplot();
     } else {Schienen=structuredClone(kuerzeste_Loesung[1]); Restschienen=structuredClone(kuerzeste_Loesung[2])}
   }
 
-function schreibe_tnr(wnr,dnr,tnr) {
-  document.getElementById('id_tnr'+wnr).innerText=wnr+' '+dnr+' '+tnr;
+function schreibe_tnr(wnr,dnr,tnr,z) {
+  document.getElementById('id_tnr'+wnr).innerText=' '+wnr+' '+dnr+' '+tnr+' '+z;
   }
 
 
@@ -534,7 +533,7 @@ function t(r,s) {
   tausche(p[2],p[3]);
   p=suche_Pivot();
   tnr=tnr+1;
-  postMessage({function:'schreibe_tnr', argument:[wnr,dnr,tnr]});
+  postMessage({function:'schreibe_tnr', argument:[wnr,dnr,tnr,Ausgangsmatrix[0][0]]});
   //alert("p="+p+"<br/>r="+xy(p[0])+"; s="+xy(p[1])+";<br/><br/>[ ["+Ausgangsmatrix.join("],<br/>  [")+"] ] / "+gemeinsamer_Nenner);
   }
 
@@ -675,7 +674,7 @@ postMessage("Hallo4 module");
     Worker_Schliessen();
 postMessage('wnr='+wnr+"; Worker_Schliessen() geschafft");
 //postMessage('Ausgangsmatrix='+Ausgangsmatrix);
-postMessage({function:"Schliessen3",argument:[Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher]});
+postMessage({function:"Schliessen3",argument:[Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr]});
 
 `;
 
