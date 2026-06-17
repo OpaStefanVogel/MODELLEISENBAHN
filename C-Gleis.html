@@ -22,7 +22,13 @@
   <button id='id_vor' style='font-size:300%'>vor</button>
   <button id='id_pop' style='font-size:300%'>zurück</button>
   <button id='id_Neustart' style='font-size:300%'>Neustart</button>
-  <span id='id_tnr1'>0</span>
+  <span id='id_tnr1'>0</span>,
+  <span id='id_tnr2'>0</span>,
+  <span id='id_tnr3'>0</span>,
+  <span id='id_tnr4'>0</span>,
+  <span id='id_tnr5'>0</span>,
+  <span id='id_tnr6'>0</span>,
+  <span id='id_tnr7'>0</span>,
   </div>
 
 <div id='SV' style='display:flex; flex-direction:row; overflow:auto; width:90%; height:80%'><div style='flex-direction:column; overflow:auto'>
@@ -134,7 +140,7 @@ let C=[];
 let Workermessage='';
 let Errormessage='';
 let myWorkers=[];
-let pusher=0;
+let pusher=[];
 
 Logvar(L1,L1);
 
@@ -280,7 +286,6 @@ function Distanzsumme(dl) {
   while (dl[4]<0&&dl[5]<0) {dl[4]=dl[4]+1; dl[5]=dl[5]+1; dl[1]=dl[1]-1}
   while (dl[7]>0&&dl[9]>0) {dl[7]=dl[7]-1; dl[9]=dl[9]-1; dl[1]=dl[1]+1}
   while (dl[7]<0&&dl[9]<0) {dl[7]=dl[7]+1; dl[9]=dl[9]+1; dl[1]=dl[1]-1}
-  
   }
 
 
@@ -288,19 +293,6 @@ function g188() { Gerade('#g188',188.33989511483273,0,0) }
 function g172() { Gerade('#g172',171.66010488516724,0,0) }
 function k130r() { Kurve('#k130r',360,30,1) }
 function k130l() { Kurve('#k130l',360,30,-1) }
-
-
-//Anfang Plus1.html
-let Ausgangsmatrix=[];
-let gemeinsamer_Nenner=1;
-let m=0;
-let n=0;
-let D=[];
-let B=[];
-let LCode="";
-let HCode="";
-let p=[];
-let hist=[];
 
 //Anfang Ausgabe  
 function k115r() { Kurve('#k130l',180,30,-1) }
@@ -333,12 +325,41 @@ function Schliessen() {
   Schienenplot();
   Kurvenliste_l=[];
   Kurvenliste_r=[];
-  pusher=0;
-  while (S.phi!=0) {pusher=pusher+1;k130r()};
+  pusher=[];
+
+  for (let i=0;i<0;i++) {k130l();pusher.push('k130l()')};
+  while (S.phi!=0) {k130r();pusher.push('k130r()')};
   myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(1)));
+  for (let i=0;i<pusher.length;i++) Spop();
+
+  pusher=[];
+  for (let i=0;i<1;i++) {k130l();pusher.push('k130l()')};
+  while (S.phi!=0) {k130r();pusher.push('k130r()')};
+  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(2)));
+  for (let i=0;i<pusher.length;i++) Spop();
+
+  pusher=[];
+  for (let i=0;i<2;i++) {k130l();pusher.push('k130l()')};
+  while (S.phi!=0) {k130r();pusher.push('k130r()')};
+  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(2)));
+  for (let i=0;i<pusher.length;i++) Spop();
+
+  pusher=[];
+  for (let i=0;i<3;i++) {k130l();pusher.push('k130l()')};
+  while (S.phi!=0) {k130r();pusher.push('k130r()')};
+  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(3)));
+  for (let i=0;i<pusher.length;i++) Spop();
+
+  pusher=[];
+  for (let i=0;i<4;i++) {k130l();pusher.push('k130l()')};
+  while (S.phi!=0) {k130r();pusher.push('k130r()')};
+  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(4)));
+  for (let i=0;i<pusher.length;i++) Spop();
+
   }
 
-function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B) {
+function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher) {
+  eval(pusher.join(';'));
   redInd=[];
   let A=Ausgangsmatrix;
   let g=gemeinsamer_Nenner;
@@ -363,7 +384,7 @@ function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B) {
   Schienen=tz;
   S=structuredClone(S2);
   //alert(pusher);
-  for (let i=0;i<pusher;i++) Spop();
+  for (let i=0;i<pusher.length;i++) Spop();
   let Vollkreis=true;
   if (Restschienen.length>=12) for (let i=0;i<12;i++) if (Restschienen[i].Bild!='#k130r') Vollkreis=false;
   if (Vollkreis==true) Restschienen=Restschienen.slice(12);
@@ -371,7 +392,7 @@ function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B) {
   }
 
 function schreibe_tnr(wnr,dnr,tnr) {
-  id_tnr1.innerText=wnr+' '+dnr+' '+tnr;
+  document.getElementById('id_tnr'+wnr).innerText=wnr+' '+dnr+' '+tnr;
   }
 
 
@@ -522,7 +543,10 @@ function suche_Pivot() {
 
   postMessage('Hallo2 module');
 
-`+'S='+JSON.stringify(S)+';\nwnr='+wnr+';\n'
+`
++'S='+JSON.stringify(S)+';\n'
++'wnr='+wnr+';\n'
++'pusher='+JSON.stringify(pusher)+';\n'
 +`
 
 function fuelle_Ausgangsmatrix(ausblenden) {
@@ -628,7 +652,7 @@ postMessage("Hallo4 module");
     Worker_Schliessen();
 postMessage("Worker_Schliessen() geschafft");
 //postMessage('Ausgangsmatrix='+Ausgangsmatrix);
-postMessage({function:"Schliessen3",argument:[Ausgangsmatrix,gemeinsamer_Nenner,D,B]});
+postMessage({function:"Schliessen3",argument:[Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher]});
 
 `;
 
@@ -843,7 +867,8 @@ g188();
 g188();
 g188();
 g188();
-g188();
+k130r();
+
 
 
 //redInd=[9,15];
