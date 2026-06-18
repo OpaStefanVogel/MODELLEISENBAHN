@@ -112,7 +112,9 @@ Schienen=
 <script>
 addEventListener('error',function(event) {alert('Fehlerausgabe von window.addEventListener("error",...)\n'+event+'\n'+event.error.name+'\n'+event.error.cause+'\n'+event.error.stack+'\n'+event.error.columnNumber+'\n'+event.error.fileName+'\n'+event.error.lineNumber+'\n'+event.error.message)});
 onerror=function(message, file, line, col, error) {alert('Fehlerausgabe von window.onerror\nmessage '+message+'\nfile: '+file+'\nline: '+line+'\ncol: '+col+'\nerror: '+error)};
+  </script>
 
+<script>
 id_g188.addEventListener("click",function() {Gerade("#g188",m188);Schliessen()});
 id_g172.addEventListener("click",function() {Gerade("#g172",m172);Schliessen()});
 id_k130r.addEventListener("click",function() {Kurve("#k130r",R,30,r);Schliessen()});
@@ -161,8 +163,10 @@ let Workermessage='';
 let Errormessage='';
 let myWorkers=[];
 let pusher=[];
-let kuerzeste_Loesung=[0,0,0,0];
+let kuerzeste_Loesung=0;
 let Schienenmerkliste=[];
+let Loesungsliste=[[1000000,0,0,1000000]];
+let fertige=0;
 
 Logvar(L1,L1);
 
@@ -343,6 +347,7 @@ function pruefe_C(g) {
   }
 
 let pushlist=[
+  [], //180 Grad Lösung
   [],
   ['k130l()'],
   ['k130l()','k130l()'],
@@ -364,15 +369,17 @@ function Schliessen() {
   Schienenplot();
   Kurvenliste_l=[];
   Kurvenliste_r=[];
-  kuerzeste_Loesung=[100000000,0,0,1000000000];
+  Loesungsliste=[[10000000,0,0,10000000]];
+  kuerzeste_Loesung=0;
+  fertige=1;
 
 
-  for (let wnr=0;wnr<pushlist.length;wnr++) {
+  for (let wnr=1;wnr<pushlist.length;wnr++) {
     pusher=structuredClone(pushlist[wnr]);
     eval(pusher.join('; '));
     while (S.phi!=0) {k130r();pusher.push('k130r()')};
     myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(wnr)));
-    for (let i=0;i<pusher.length;i++) Spop();
+    for (let i=0;i<pusher.length;i++) S=Schienen.pop();
     }
 
   }
@@ -382,7 +389,6 @@ function Kurvenzahl() {
   for (let i=0;i<Restschienen.length;i++) if (Restschienen[i].Bild.indexOf('k')>-1) k=k+1;
   return k;
   }
-  	
 
 function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr) {
   eval(pusher.join(';'));
@@ -417,12 +423,15 @@ function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr) {
     if (Vollkreis==true) Restschienen.splice(j,12);
     }
   let k=Kurvenzahl();
-  L0.innerHTML=L0.innerHTML+'<br/>ä '+wnr+' '+Restschienen.length+' '+kuerzeste_Loesung[0]+' '+k+' '+kuerzeste_Loesung[3]+' ä';
-  if ((Restschienen.length<kuerzeste_Loesung[0])||((Restschienen.length==kuerzeste_Loesung[0])&&(k<kuerzeste_Loesung[3]))) {
-    kuerzeste_Loesung=[Restschienen.length,structuredClone(Schienen),structuredClone(Restschienen),k];
-    L0.innerHTML=L0.innerHTML+'<br/>ö '+kuerzeste_Loesung[0]+' ö';
-    Schienenplot();
-    } else {Schienen=structuredClone(kuerzeste_Loesung[1]); Restschienen=structuredClone(kuerzeste_Loesung[2])}
+  Loesungsliste[wnr]=[Restschienen.length,structuredClone(Schienen),structuredClone(Restschienen),k];
+  L0.innerHTML=L0.innerHTML+'<br/>ä '+wnr+' '+Restschienen.length+' '+Loesungsliste[kuerzeste_Loesung][0]+' '+k+' '+Loesungsliste[kuerzeste_Loesung][3]+' ä';
+  if ((Restschienen.length<Loesungsliste[kuerzeste_Loesung][0])||((Restschienen.length==Loesungsliste[kuerzeste_Loesung][0])&&(k<Loesungsliste[kuerzeste_Loesung][3]))) {
+    kuerzeste_Loesung=wnr;
+    L0.innerHTML=L0.innerHTML+'<br/>ö '+Loesungsliste[kuerzeste_Loesung][0]+' ö';
+    //Schienenplot();
+    } else {Schienen=structuredClone(Loesungsliste[kuerzeste_Loesung][1]); Restschienen=structuredClone(Loesungsliste[kuerzeste_Loesung][2])}
+  fertige=fertige+1;
+  if (fertige==pushlist.length) Schienenplot();
   }
 
 function schreibe_tnr(wnr,dnr,tnr,z,t) {
