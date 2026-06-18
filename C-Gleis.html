@@ -30,17 +30,6 @@
   <svg id="Grafik" width="2000" height="2000" style="border:solid 1px black" fill="none" stroke="darkgrey">
     <title>SVG C-Gleis</title>
     <defs>
-      <g id="Weiche">
-        <!--path d="M0,0 l100,0 M0,20 l100,0 M0,0 A200,200 0,0,1 100,26.8 M0,20 A180,180 0,0,1 90,44.12" fill="none" stroke="red"/-->
-        <path d="M5,0.2 A200,200 0,0,1 87.178,20 L5,18">
-<animate attributeName="d" from="M5,0.2 A200,200 0,0,1 87.178,20 L5,18" to="M4.9,2.2 A200,200 0,0,1 87.178,20 L4.95,20" dur="0.5" fill="freeze" begin="kru.click" end="100"/>
-<animate attributeName="d" to="M5,0.2 A200,200 0,0,1 87.178,20 L5,18" from="M4.9,2.2 A200,200 0,0,1 87.178,20 L4.95,20" dur="0.5" fill="freeze" begin="ger.click" end="100"/>
-          </path>
-        <path d="M100,20 L87.178,20 A200,200 0,0,1 100,26.8" stroke-linejoin="miter" stroke-miterlimit="20" stroke="white" transform="translate(-2,-0.5)"/>
-        <path d="M0,0 l100,0 M100,20 L87.178,20 A200,200 0,0,1 100,26.8 M0,20 A180,180 0,0,1 90,44.12" stroke-linejoin="miter" stroke-miterlimit="20"/>
-        <circle id="kru" cx="100" cy="-12" r="5" fill="green"/>
-        <circle id="ger" cx="90" cy="55" r="5" fill="orange"/>
-        </g>
       <g id='Schienenlegezug'>
         <rect x='0' y='-15' width='80' height='30' fill='gray' stroke='none' opacity='0.5'/>
         </g>
@@ -57,8 +46,19 @@
         <path d='m 0,0 a360,360,0 0,0 170,-43'/>
         </g>
       </defs>
+      <g id="Weiche" transform='translate(80,50) rotate(10)'>
+        <!--path d="M0,0 l100,0 M0,20 l100,0 M0,0 A200,200 0,0,1 100,26.8 M0,20 A180,180 0,0,1 90,44.12" fill="none" stroke="red"/-->
+        <path d="M5,0.2 A200,200 0,0,1 87.178,20 L5,18">
+<animate attributeName="d" from="M5,0.2 A200,200 0,0,1 87.178,20 L5,18" to="M4.9,2.2 A200,200 0,0,1 87.178,20 L4.95,20" dur="0.5" fill="freeze" begin="kru.click" end="100"/>
+<animate attributeName="d" to="M5,0.2 A200,200 0,0,1 87.178,20 L5,18" from="M4.9,2.2 A200,200 0,0,1 87.178,20 L4.95,20" dur="0.5" fill="freeze" begin="ger.click" end="100"/>
+          </path>
+        <path d="M100,20 L87.178,20 A200,200 0,0,1 100,26.8" stroke-linejoin="miter" stroke-miterlimit="20" stroke="white" transform="translate(-2,-0.5)"/>
+        <path d="M0,0 l100,0 M100,20 L87.178,20 A200,200 0,0,1 100,26.8 M0,20 A180,180 0,0,1 90,44.12" stroke-linejoin="miter" stroke-miterlimit="20"/>
+        <circle id="kru" cx="100" cy="-12" r="5" fill="green"/>
+        <circle id="ger" cx="90" cy="55" r="5" fill="orange"/>
+        </g>
     <g id='content'>
-    <use id='Weiche1' href="#Weiche" transform='translate(50,50) rotate(10)'/>
+    <!--use id='Weiche1' href="#Weiche" transform='translate(80,50) rotate(10)'/-->
     
     </g>
   </svg></div></div>
@@ -67,6 +67,7 @@
 Worker Messages=
 <div style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
   <div style='display:flex; flex-direction:row'>  
+  <span id='id_tnr0'>0</span>,
   <span id='id_tnr1'>0</span>,
   <span id='id_tnr2'>0</span>,
   <span id='id_tnr3'>0</span>,
@@ -80,7 +81,7 @@ Worker Messages=
   <span id='id_tnr11'>0</span>,
   <span id='id_tnr12'>0</span>,
     </div>
-  <div id='L0' style='display:none; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile3</div>
+  <div id='L0' style='display:block; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile3</div>
   <div id='Worker_message'>sonst noch nix</div>
   </div>
 <hr/>
@@ -165,9 +166,7 @@ let Schienenmerkliste=[];
 
 Logvar(L1,L1);
 
-let st0=`
-    <use id='Weiche1' href="#Weiche" transform='translate(50,50) rotate(10)'/>
-    `;
+let st0='';
 
 function Logvar(id,id2) {
   let text='';
@@ -343,112 +342,38 @@ function pruefe_C(g) {
   return true;
   }
 
+let pushlist=[
+  [],
+  ['k130l()'],
+  ['k130l()','k130l()'],
+  ['k130l()','k130l()','k130l()'],
+  ['k130l()','k130l()','k130l()','k130l()'],
+  ['k130l()','k130l()','k130l()','k130l()','k130l()'],
+  ['k130r()','k130l()'],
+  ['k130r()','k130l()','k130l()'],
+  ['g188()','k130l()','k130l()'],
+  ['g172()','k130l()','k130l()'],
+  ['k130r()','k130l()','k130r()','k130l()'],
+  ['k130l()','k130r()','k130l()']
+  ];
+  
 function Schliessen() {
   while(myWorkers.length>0) myWorkers.pop().terminate();
+  L0.innerHTML='';
   Workermessage='';
   Schienenplot();
   Kurvenliste_l=[];
   Kurvenliste_r=[];
   kuerzeste_Loesung=[100000000,0,0,1000000000];
-  
-
-if (1) {
-  pusher=[];
-  for (let i=0;i<0;i++) {k130l();pusher.push('k130l()')};
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(1)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
-
-if (1) {
-  pusher=[];
-  for (let i=0;i<1;i++) {k130l();pusher.push('k130l()')};
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(2)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
-
-if (1) {
-  pusher=[];
-  for (let i=0;i<2;i++) {k130l();pusher.push('k130l()')};
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(3)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
-
-if (1) {
-  pusher=[];
-  for (let i=0;i<3;i++) {k130l();pusher.push('k130l()')};
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(4)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
-
-if (1) {
-  pusher=[];
-  for (let i=0;i<4;i++) {k130l();pusher.push('k130l()')};
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(5)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
-
-if (1) {
-  pusher=[];
-  for (let i=0;i<5;i++) {k130l();pusher.push('k130l()')};
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(6)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
-
-if (1) {
-  pusher=['k130r()','k130l()'];
-  eval(pusher.join('; '));
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(7)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
-
-if (1) {
-  pusher=['k130r()','k130l()','k130l()'];
-  eval(pusher.join('; '));
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(8)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
-
-if (1) {
-  pusher=['g188()','k130l()','k130l()'];
-  eval(pusher.join('; '));
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(9)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
-
-if (1) {
-  pusher=['g172()','k130l()','k130l()'];
-  eval(pusher.join('; '));
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(10)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
-
-if (1) {
-  pusher=['k130r()','k130l()','k130r()','k130l()'];
-  eval(pusher.join('; '));
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(11)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
-
-if (1) {
-  pusher=['k130l()','k130r()','k130l()'];
-  eval(pusher.join('; '));
-  while (S.phi!=0) {k130r();pusher.push('k130r()')};
-  myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(12)));
-  for (let i=0;i<pusher.length;i++) Spop();
-  }
 
 
+  for (let wnr=0;wnr<pushlist.length;wnr++) {
+    pusher=structuredClone(pushlist[wnr]);
+    eval(pusher.join('; '));
+    while (S.phi!=0) {k130r();pusher.push('k130r()')};
+    myWorkers.push(Erzeuge_Worker(Erzeuge_scripttext(wnr)));
+    for (let i=0;i<pusher.length;i++) Spop();
+    }
 
   }
 
@@ -500,8 +425,8 @@ function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr) {
     } else {Schienen=structuredClone(kuerzeste_Loesung[1]); Restschienen=structuredClone(kuerzeste_Loesung[2])}
   }
 
-function schreibe_tnr(wnr,dnr,tnr,z) {
-  document.getElementById('id_tnr'+wnr).innerText=' '+wnr+' '+dnr+' '+tnr+' '+z;
+function schreibe_tnr(wnr,dnr,tnr,z,t) {
+  document.getElementById('id_tnr'+wnr).innerText=' '+wnr+' '+dnr+' '+tnr+' '+z+' '+t;
   }
 
 function Neustart() {
@@ -542,7 +467,8 @@ for (let z=0;z<zm;z++) k130r();
 */
 
 //Schliessen(); 
-Schienenplot();
+//Schienenplot();
+
 
 
 let scripttext='';
@@ -585,6 +511,7 @@ let hist=[];
 let wnr=0;
 let tnr=0;
 let dnr=0;
+let Startzeit=Date.now();
 
 function Los() {
   //alert(document.getElementById("input").value);
@@ -633,7 +560,7 @@ function t(r,s) {
   tausche(p[2],p[3]);
   p=suche_Pivot();
   tnr=tnr+1;
-  postMessage({function:'schreibe_tnr', argument:[wnr,dnr,tnr,Ausgangsmatrix[0][0]]});
+  postMessage({function:'schreibe_tnr', argument:[wnr,dnr,tnr,Ausgangsmatrix[0][0],Date.now()-Startzeit]});
   //alert("p="+p+"<br/>r="+xy(p[0])+"; s="+xy(p[1])+";<br/><br/>[ ["+Ausgangsmatrix.join("],<br/>  [")+"] ] / "+gemeinsamer_Nenner);
   }
 
@@ -678,9 +605,9 @@ Ausgangsmatrix=[
 /* z*/ //[  0, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1, -2, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 /* z*/ //[  0,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  1,  1,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 /* z*/ //[  0, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2, -1, -1, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
-/* z*/ //[  0, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ [  0, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9, -1, -1, -9,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 /* z*/ //[  0, -1, -1, -8, -1, -1,-16, -1, -1,-24, -1, -1,-32, -1, -1,-40, -1, -1,-48, -1, -1,-56, -1, -1,-64, -1, -1,-72, -1, -1,-80, -1, -1,-88, -1, -1,-96,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
-/* z*/ [  0, -1, -1,-96, -1, -1,-88, -1, -1,-80, -1, -1,-72, -1, -1,-64, -1, -1,-56, -1, -1,-48, -1, -1,-40, -1, -1,-32, -1, -1,-24, -1, -1,-16, -1, -1, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+/* z*/ //[  0, -1, -1,-96, -1, -1,-88, -1, -1,-80, -1, -1,-72, -1, -1,-64, -1, -1,-56, -1, -1,-48, -1, -1,-40, -1, -1,-32, -1, -1,-24, -1, -1,-16, -1, -1, -8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
  
 //       x0, x1, x2, x3, x4, x5, x6, x7, x8  x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56  
 //horiz.  b,  0,  0, 15, 30, 30, 45, 60, 60, 75, 90, 90,105,120,120,135,150,150,165,180,180,195,210,210,225,240,240,255,270,270,285,300,300,315,330,330,345,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W,  X,  X,  Y,  Y,  Z,  Z,  V,  V,  W,  W],
@@ -1009,13 +936,13 @@ ok L1 L2 ans Ende scrollen
 .. Zwischenlok
 .. Lösung3_1 und 3_2 zusammenziehen
 .. Teillösung4 komprimieren
-.. Versuch 180 Grad Drehung als Anfangslösung nehmen
 ok warum geht das ohne Worker so langsam? aha wegen .innerHTML=HCode
 .. warum geht self[SG.function] nicht in module?
-.. zurueck() geht nur langsam drücken
-.. beim letzten vor() Endlosschleife
-.. mehrfach Neustart
-.. undo nach Neustart
+ok zurueck() geht nur langsam drücken
+ok beim letzten vor() Endlosschleife
+ok mehrfach Neustart
+ok undo nach Neustart
+.. 180 Grad Drehung als Anfangslösung nehmen
   -->
   
   
