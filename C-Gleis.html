@@ -281,9 +281,10 @@ function vor() {
   }
 
 function Spop() {
-  S=Schienen.pop();
-  Restschienen.unshift(structuredClone(S));
-  //S=structuredClone(L);
+  if (Schienen.length>0) {
+    S=Schienen.pop();
+    Restschienen.unshift(structuredClone(S));
+    }
   }
 
 function m188m172such(d) {
@@ -364,15 +365,25 @@ let pushlist=[
   
 function Schliessen() {
   while(myWorkers.length>0) myWorkers.pop().terminate();
-  L0.innerHTML='';
   Workermessage='';
   Schienenplot();
   Kurvenliste_l=[];
   Kurvenliste_r=[];
-  Loesungsliste=[[10000000,0,0,10000000]];
+  
+  pusher=[];
+  while (S.phi!=180) {k130r();pusher.push('k130r()')}
+  let sl=Schienen.length
+  for (let i=0;i<sl;i++) {eval(Schienen[i].Bild.slice(1)+'()');pusher.push(Schienen[i].Bild.slice(1)+'()')}
+  Restschienen=[];
+  for (let i=0;i<pusher.length;i++) Spop();
+  
+  let k=Kurvenzahl();
+  Loesungsliste=[[Restschienen.length,structuredClone(Schienen),structuredClone(Restschienen),k]];
+  L0.innerHTML='ä 0 '+Restschienen.length+' '+Restschienen.length+' '+k+' '+k+' ä';
+
   kuerzeste_Loesung=0;
   fertige=1;
-
+  Restschienen=[];
 
   for (let wnr=1;wnr<pushlist.length;wnr++) {
     pusher=structuredClone(pushlist[wnr]);
@@ -431,7 +442,10 @@ function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr) {
     //Schienenplot();
     } else {Schienen=structuredClone(Loesungsliste[kuerzeste_Loesung][1]); Restschienen=structuredClone(Loesungsliste[kuerzeste_Loesung][2])}
   fertige=fertige+1;
-  if (fertige==pushlist.length) Schienenplot();
+  if (fertige==pushlist.length) {
+    Schienenplot();
+    document.getElementById('id_tnr'+kuerzeste_Loesung).innerText=document.getElementById('id_tnr'+wnr).innerText+'*';
+    }
   }
 
 function schreibe_tnr(wnr,dnr,tnr,z,t) {
@@ -951,7 +965,7 @@ ok zurueck() geht nur langsam drücken
 ok beim letzten vor() Endlosschleife
 ok mehrfach Neustart
 ok undo nach Neustart
-.. 180 Grad Drehung als Anfangslösung nehmen
+ok 180 Grad Drehung als Anfangslösung nehmen
   -->
   
   
