@@ -8,6 +8,7 @@
 
 <!-- <EISENB><HILLI>ok hab d=(Math.sqrt(7)-2)/3*R</HILLI></EISENB> -->
 <body>
+<a href='https://opastefanvogel.github.io/MODELLEISENBAHN/C-Gleis.html'>https://opastefanvogel.github.io/MODELLEISENBAHN/C-Gleis.html</a>
 <div id='Logfiles' style='display:flex'>
   <div id='L1' style='display:block; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile1</div>
   <div id='L2' style='display:block; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile2</div>
@@ -64,7 +65,7 @@
   </svg></div></div>
   
 <hr/>
-Worker Messages=
+Worker Messages (Lösung Schienenzahl Kurvenzahl Zeitdauer)=
 <div style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
   <div style='display:flex; flex-direction:row'>  
   <spa id='id_tnr0'>0 0 0 0</spa>
@@ -81,7 +82,7 @@ Worker Messages=
   <spa id='id_tnr11'>0</spa>
   <spa id='id_tnr12'>0</spa>
     </div>
-  <div id='L0' style='display:block; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile3</div>
+  <div id='L0' style='display:none; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile0</div>
   <div id='Worker_message'>sonst noch nix</div>
   </div>
 <hr/>
@@ -97,6 +98,8 @@ SVG=
 <hr/>
 Schienen=
 <div id='L4' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto'>Logfile4</div>
+Restschienen=
+<div id='L5' style='display:block; border:solid; margin:10px; white-space:pre; overflow:auto'>Logfile5</div>
 
 
 </body>
@@ -154,6 +157,7 @@ let lfdnr=0;
 let Schienen=[];
 let Restschienen=[];
 let Schienenliste='';
+let Restschienenliste='';
 let h=[0,0];
 let v=[0,0];
 let Distanzmerkliste=[
@@ -222,6 +226,7 @@ function Logvar(id,id2) {
   id.innerHTML=text;
   id.scrollTop = id.scrollHeight;
   L4.innerHTML=Schienenliste;
+  L5.innerHTML=Restschienenliste;
   }
 
 function Gerade(Bild,Laenge) {
@@ -276,8 +281,10 @@ function Schienenplot(wnr) {
     Schienenliste=Schienenliste+S.fun[1].slice(1)+'();\n';
     st=st+'<use id="Schiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" stroke="green" stroke-width="30"/>\n  ';
     }
+  Restschienenliste='';
   for (let i=0;i<Restschienen.length;i++) {
     let S=Restschienen[i];
+    Restschienenliste=Restschienenliste+S.fun[1].slice(1)+'();\n';
     st=st+'<use id="Restschiene'+i+'" href="'+S.Bild+'" transform="translate('+S.x+','+S.y+') rotate('+S.phi+') scale('+scale+')" stroke="red" stroke-width="30" opacity="0.7"/>\n  ';
     }
   st=st+'<use id="Schienenlegezug1" href="#Schienenlegezug" transform="translate('+S.x+','+S.y+') rotate('+S.phi+')"/>\n  ';
@@ -398,7 +405,7 @@ function Schliessen() {
   let k=Kurvenzahl();
   Loesungsliste=[[Restschienen.length,structuredClone(Schienen),structuredClone(Restschienen),k]];
   L0.innerHTML='ä 0 '+Restschienen.length+' '+Restschienen.length+' '+k+' '+k+' ä';
-  id_tnr0.innerHTML='0 0 0 0';
+  id_tnr0.innerHTML='0 '+Restschienen.length+' '+k;
 
   kuerzeste_Loesung=0;
   fertige=1;
@@ -420,7 +427,7 @@ function Kurvenzahl() {
   return k;
   }
 
-function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr) {
+function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr,t) {
   eval(pusher.join(';'));
   redInd=[];
   let A=Ausgangsmatrix;
@@ -455,6 +462,7 @@ function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr) {
   let k=Kurvenzahl();
   Loesungsliste[wnr]=[Restschienen.length,structuredClone(Schienen),structuredClone(Restschienen),k];
   L0.innerHTML=L0.innerHTML+'<br/>ä '+wnr+' '+Restschienen.length+' '+Loesungsliste[kuerzeste_Loesung][0]+' '+k+' '+Loesungsliste[kuerzeste_Loesung][3]+' ä';
+  document.getElementById('id_tnr'+wnr).innerHTML=wnr+' '+Restschienen.length+' '+k+' '+t;
   if ((Restschienen.length<Loesungsliste[kuerzeste_Loesung][0])||((Restschienen.length==Loesungsliste[kuerzeste_Loesung][0])&&(k<Loesungsliste[kuerzeste_Loesung][3]))) {
     kuerzeste_Loesung=wnr;
     L0.innerHTML=L0.innerHTML+'<br/>ö '+Loesungsliste[kuerzeste_Loesung][0]+' ö';
@@ -482,6 +490,8 @@ function Neustart() {
   g188();
   Schienen.length=1;
   Spop();
+  g188();
+  g172();
   Schliessen();
   }
 
@@ -516,29 +526,32 @@ for (let z=0;z<zm;z++) k130r();
 let scripttext='';
 //innerhalb scriptext kein \n verwenden weil das bereits von `...` ausgewertet wird!!!
 function Erzeuge_scripttext(wnr) {
-  scripttext=`
-if (self.toString()=="[object DedicatedWorkerGlobalScope]") {
-  postMessage("self.navigator.hardwareConcurrency="
+  scripttext='let S='+JSON.stringify(S)+';\n'
+    +'let wnr='+wnr+';\n'
+    +'let pusher='+JSON.stringify(pusher)+';\n'
++`
+if (self.toString()=="[object DedicatedWorkerGlobalScope]"&&wnr==1) {
+  postMessage("Worker 1 self.toString()="+self.toString());
+  postMessage("Worker 1 self.navigator.hardwareConcurrency="
     +self.navigator.hardwareConcurrency);
-  postMessage("self.toString()="+self.toString());
-  onmessage = (event) => {
-    let SG=event.data;
-    postMessage(JSON.stringify(SG));
-    postMessage("event.ports="+JSON.stringify(event.ports));
-    //postMessage(eval("let xxx=77"));
-    //postMessage(xxx);
-    postMessage("Starte eval("+SG.Button+")");
-    eval(SG.Button);
-    if (event.ports.length) event.ports[0].postMessage({"result":"oho, hat funktioniert"});
-    let j=1;
-    for (let i=0;i<0*1000000000;i++) {
-      if (j%100000000==0) postMessage(j);
-      j=j+1}
-    //postMessage({function:"alert", argument:[789]})
-    };
-  onerror = (e) => {postMessage('Fehlerausgabe von Worker onerror='+e)};
-  postMessage('Hallo module');
   }
+
+onmessage = (event) => {
+  let SG=event.data;
+  postMessage(JSON.stringify(SG));
+  postMessage("event.ports="+JSON.stringify(event.ports));
+  //postMessage(eval("let xxx=77"));
+  //postMessage(xxx);
+  postMessage("Starte eval("+SG.Button+")");
+  eval(SG.Button);
+  if (event.ports.length) event.ports[0].postMessage({"result":"oho, hat funktioniert"});
+  let j=1;
+  for (let i=0;i<0*1000000000;i++) {
+    if (j%100000000==0) postMessage(j);
+    j=j+1}
+  //postMessage({function:"alert", argument:[789]})
+  };
+onerror = (e) => {postMessage('Fehlerausgabe von Worker '+wnr+' onerror='+e)};
 
 let Ausgangsmatrix=[];
 let gemeinsamer_Nenner=1;
@@ -550,7 +563,6 @@ let LCode="";
 let HCode="";
 let p=[];
 let hist=[];
-let wnr=0;
 let tnr=0;
 let dnr=0;
 let Startzeit=Date.now();
@@ -602,7 +614,7 @@ function t(r,s) {
   tausche(p[2],p[3]);
   p=suche_Pivot();
   tnr=tnr+1;
-  postMessage({function:'schreibe_tnr', argument:[wnr,dnr,tnr,Ausgangsmatrix[0][0],Date.now()-Startzeit]});
+  //postMessage({function:'schreibe_tnr', argument:[wnr,dnr,tnr,Ausgangsmatrix[0][0],Date.now()-Startzeit]});
   //alert("p="+p+"<br/>r="+xy(p[0])+"; s="+xy(p[1])+";<br/><br/>[ ["+Ausgangsmatrix.join("],<br/>  [")+"] ] / "+gemeinsamer_Nenner);
   }
 
@@ -632,13 +644,6 @@ function suche_Pivot() {
   return [r,s,ri,sj,v];
   }
 
-  postMessage('Hallo2 module');
-
-`
-+'S='+JSON.stringify(S)+';\n'
-+'wnr='+wnr+';\n'
-+'pusher='+JSON.stringify(pusher)+';\n'
-+`
 
 function fuelle_Ausgangsmatrix(ausblenden) {
 Ausgangsmatrix=[
@@ -707,7 +712,6 @@ gemeinsamer_Nenner=1;
   }
 
 
-  postMessage('Hallo3 module');
 
 function pruefe_C(g) {
   let i0=-1;
@@ -725,7 +729,7 @@ function Worker_Schliessen() {
   let g=1;
   C=[];
   do {
-    postMessage("do");
+    postMessage("Worker "+wnr+" dnr="+dnr);
     fuelle_Ausgangsmatrix(redInd);
     Los();//startet Plus4.html
     //id_weiter1000.click();
@@ -737,15 +741,14 @@ function Worker_Schliessen() {
     for (let i=0;i<D.length;i++) C[i]=-1;
     for (let i=0;i<B.length;i++) if (B[i]>0) C[B[i]]=i;
     dnr=dnr+1;
-    postMessage("wnr="+wnr+"; dnr="+dnr);
     } while (pruefe_C(g));
   }
 
-postMessage("Hallo4 module");
-    Worker_Schliessen();
-postMessage('wnr='+wnr+"; Worker_Schliessen() geschafft");
+postMessage('Worker '+wnr+' Lösung suchen');
+Worker_Schliessen();
+postMessage('Worker '+wnr+' Lösung gefunden');
 //postMessage('Ausgangsmatrix='+Ausgangsmatrix);
-postMessage({function:"Schliessen3",argument:[Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr]});
+postMessage({function:"Schliessen3",argument:[Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr,Date.now()-Startzeit]});
 
 `;
 
@@ -782,11 +785,11 @@ function Erzeuge_Worker(scripttext) {
   myWorker.onerror = (e) => {
     alert('ERROR in Worker, siehe Fehlerausgabe unter "Ausgabe von Worker"\n'+e.message);
     Errormessage="<b>ERROR: "+e.message+'</b> <a href="#Fehlerausgabe2">in line '+e.lineno+" at col "+e.colno+"</a>";
-    document.getElementById("Disp_Worker").firstElementChild.innerHTML=Errormessage;
+    document.getElementById("Disp_Worker").innerHTML=Errormessage;
     Workermessage=Workermessage+"\n<b>ERROR: "+e.message+"</b> in line "+e.lineno+" at col "+e.colno+":\n"+e.stack+"\n";
-    let Textstelle_davor=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno-1);
+    let Textstelle_davor=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno);
     let Textstelle=Textstelle_davor+e.colno;
-    let Textstelle_danach=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno);
+    let Textstelle_danach=suche_Textstelle_ab_Zeilennummer(scripttext,e.lineno+1);
     if (Textstelle_danach-Textstelle>100) Textstelle_danach=Textstelle+100;
     if (e.colno>100) Textstelle_davor=Textstelle-100;
     Workermessage=Workermessage+scripttext.slice(Textstelle_davor,Textstelle).replace(/</g,"&lt;")+'<a id="Fehlerausgabe1" href="#Fehlerausgabe2" style="background-color:aqua">'+scripttext.slice(Textstelle,Textstelle_danach).replace(/</g,"&lt;")+"</a>";
