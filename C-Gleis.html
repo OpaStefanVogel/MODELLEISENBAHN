@@ -67,19 +67,19 @@
 Worker Messages=
 <div style="display:flex; flex-direction:column; overflow:auto; white-space:pre-wrap; font-family:Courier,monospace; font-size:80%; color:black;">
   <div style='display:flex; flex-direction:row'>  
-  <span id='id_tnr0'>0</span>,
-  <span id='id_tnr1'>0</span>,
-  <span id='id_tnr2'>0</span>,
-  <span id='id_tnr3'>0</span>,
-  <span id='id_tnr4'>0</span>,
-  <span id='id_tnr5'>0</span>,
-  <span id='id_tnr6'>0</span>,
-  <span id='id_tnr7'>0</span>,
-  <span id='id_tnr8'>0</span>,
-  <span id='id_tnr9'>0</span>,
-  <span id='id_tnr10'>0</span>,
-  <span id='id_tnr11'>0</span>,
-  <span id='id_tnr12'>0</span>,
+  <spa id='id_tnr0'>0 0 0 0</spa>
+  <spa id='id_tnr1'>0</spa>
+  <spa id='id_tnr2'>0</spa>
+  <spa id='id_tnr3'>0</spa>
+  <spa id='id_tnr4'>0</spa>
+  <spa id='id_tnr5'>0</spa>
+  <spa id='id_tnr6'>0</spa>
+  <spa id='id_tnr7'>0</spa>
+  <spa id='id_tnr8'>0</spa>
+  <spa id='id_tnr9'>0</spa>
+  <spa id='id_tnr10'>0</spa>
+  <spa id='id_tnr11'>0</spa>
+  <spa id='id_tnr12'>0</spa>
     </div>
   <div id='L0' style='display:block; border:solid; margin:10px; width:45%; height:200px; overflow:auto'>Logfile3</div>
   <div id='Worker_message'>sonst noch nix</div>
@@ -106,6 +106,7 @@ Schienen=
   td {text-align:right; min-width:10}
   .zulaessig {background-color:pink}
   .fortschritt {background-color:aqua}
+  spa {border:solid; border-color:teal; margin:2}
   </style>
 
 
@@ -122,6 +123,19 @@ id_k130l.addEventListener("click",function() {Kurve("#k130l",R,30,l);Schliessen(
 id_vor.addEventListener("click",function() {vor();Schienenplot()});
 id_pop.addEventListener("click",function() {Spop();Schliessen()});
 id_Neustart.addEventListener("click",function() {Neustart()});
+id_tnr0.addEventListener("click",function() {Schienenplot(0)});
+id_tnr1.addEventListener("click",function() {Schienenplot(1)});
+id_tnr2.addEventListener("click",function() {Schienenplot(2)});
+id_tnr3.addEventListener("click",function() {Schienenplot(3)});
+id_tnr4.addEventListener("click",function() {Schienenplot(4)});
+id_tnr5.addEventListener("click",function() {Schienenplot(5)});
+id_tnr6.addEventListener("click",function() {Schienenplot(6)});
+id_tnr7.addEventListener("click",function() {Schienenplot(7)});
+id_tnr8.addEventListener("click",function() {Schienenplot(8)});
+id_tnr9.addEventListener("click",function() {Schienenplot(9)});
+id_tnr10.addEventListener("click",function() {Schienenplot(10)});
+id_tnr11.addEventListener("click",function() {Schienenplot(11)});
+id_tnr12.addEventListener("click",function() {Schienenplot(12)});
 
 let R=360;
 let d=(Math.sqrt(7)-2)/3*R;
@@ -249,7 +263,11 @@ function Kurve(Bild,Radius,Winkel,rl) {
   }
 
 let st='';
-function Schienenplot() {
+function Schienenplot(wnr) {
+  if (wnr!=undefined) {
+    Schienen=structuredClone(Loesungsliste[wnr][1]);
+    Restschienen=structuredClone(Loesungsliste[wnr][2]);
+    }
   st=st0;
   Schienenliste='';
   for (let i=0;i<Schienen.length;i++) {
@@ -380,6 +398,7 @@ function Schliessen() {
   let k=Kurvenzahl();
   Loesungsliste=[[Restschienen.length,structuredClone(Schienen),structuredClone(Restschienen),k]];
   L0.innerHTML='ä 0 '+Restschienen.length+' '+Restschienen.length+' '+k+' '+k+' ä';
+  id_tnr0.innerHTML='0 0 0 0';
 
   kuerzeste_Loesung=0;
   fertige=1;
@@ -444,7 +463,7 @@ function Schliessen3(Ausgangsmatrix,gemeinsamer_Nenner,D,B,pusher,wnr) {
   fertige=fertige+1;
   if (fertige==pushlist.length) {
     Schienenplot();
-    document.getElementById('id_tnr'+kuerzeste_Loesung).innerText=document.getElementById('id_tnr'+wnr).innerText+'*';
+    document.getElementById('id_tnr'+kuerzeste_Loesung).innerHTML='<b>beste Lösung:</b> '+document.getElementById('id_tnr'+kuerzeste_Loesung).innerText;
     }
   }
 
